@@ -1,7 +1,6 @@
 <script setup>
 import RectLegend from '@/components/d3/legends/RectLegend.vue';
 import Scatter from '@/components/d3/charts/Scatter.vue';
-import { computed } from 'vue';
 import { ref } from 'vue';
 import * as d3 from 'd3';
 import { discreteScheme } from '@/composables/color/scheme';
@@ -24,22 +23,57 @@ getData();
 </script>
 <template>
   <div class="v-main">
-    <div class="d-flex justify-center">
-      <Scatter
-        :data="
-          data.map((d) => ({
-            x: d[`tsne-2d-x`],
-            y: d[`tsne-2d-y`],
-            category: d['city'],
-            ...d,
-          }))
-        "
-        width="600"
-        height="600"
-        :scheme="cityScheme"
-      />
+    <div class="d-flex justify-center pb-16">
+      <div class="pt-8">
+        <Scatter
+          :data="
+            data.map((d) => ({
+              x: d[`tsne-2d-x`],
+              y: d[`tsne-2d-y`],
+              category: d['city'],
+              ...d,
+            }))
+          "
+          width="600"
+          height="600"
+          :scheme="cityScheme"
+        />
+        <div class="text-center text-h5">T-SNE</div>
+      </div>
+      <div class="pt-8">
+        <Scatter
+          :data="
+            data.map((d) => ({
+              x: d[`pca-2d-x`],
+              y: d[`pca-2d-y`],
+              category: d['city'],
+              ...d,
+            }))
+          "
+          width="600"
+          height="600"
+          :scheme="cityScheme"
+        />
+        <div class="text-center text-h5">PCA</div>
+      </div>
+      <div class="pt-8">
+        <Scatter
+          :data="
+            data.map((d) => ({
+              x: d[`mds-2d-x`],
+              y: d[`mds-2d-y`],
+              category: d['city'],
+              ...d,
+            }))
+          "
+          width="600"
+          height="600"
+          :scheme="cityScheme"
+        />
+        <div class="text-center text-h5">MDS</div>
+      </div>
     </div>
-    <div>
+    <div class="d-flex justify-center">
       <RectLegend
         :data="
           data.map((d) => ({

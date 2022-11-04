@@ -2,6 +2,8 @@
 import * as d3 from 'd3';
 import { computed, defineProps } from 'vue';
 import D3Wrapper from '@/components/d3/D3Wrapper.vue';
+import { xAxis, yAxis } from '@/composables/d3/decoration/axis';
+import { naiveGrid } from '@/composables/d3/decoration/grid';
 
 const props = defineProps({
   data: {
@@ -82,66 +84,36 @@ const chart = computed(() => {
     scheme,
   );
 
-  const xAxis = (g) =>
-    g
-      .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x).ticks(width / 80))
-      .call((g) => g.select('.domain').remove())
-      .call((g) =>
-        g
-          .append('text')
-          .attr('x', width)
-          .attr('y', margin.bottom - 4)
-          .attr('fill', 'currentColor')
-          .attr('text-anchor', 'end')
-          .text(xLabel),
-      );
+  svg.append('g').call(
+    xAxis(x, {
+      posX: 0,
+      posY: height - margin.bottom,
+      width: width,
+      label: xLabel,
+      labelX: width,
+      labelY: margin.bottom - 4,
+    }),
+  );
 
-  const yAxis = (g) =>
-    g
-      .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y))
-      .call((g) => g.select('.domain').remove())
-      .call((g) =>
-        g
-          .append('text')
-          .attr('x', -margin.left)
-          .attr('y', 10)
-          .attr('fill', 'currentColor')
-          .attr('text-anchor', 'start')
-          .text(yLabel),
-      );
+  svg.append('g').call(
+    yAxis(y, {
+      posX: margin.left,
+      posY: 0,
+      height: height,
+      label: yLabel,
+      labelX: -margin.left,
+      labelY: 10,
+    }),
+  );
 
-  const grid = (g) =>
-    g
-      .attr('stroke', 'currentColor')
-      .attr('stroke-opacity', 0.1)
-      .call((g) =>
-        g
-          .append('g')
-          .selectAll('line')
-          .data(x.ticks())
-          .join('line')
-          .attr('x1', (d) => 0.5 + x(d))
-          .attr('x2', (d) => 0.5 + x(d))
-          .attr('y1', margin.top)
-          .attr('y2', height - margin.bottom),
-      )
-      .call((g) =>
-        g
-          .append('g')
-          .selectAll('line')
-          .data(y.ticks())
-          .join('line')
-          .attr('y1', (d) => 0.5 + y(d))
-          .attr('y2', (d) => 0.5 + y(d))
-          .attr('x1', margin.left)
-          .attr('x2', width - margin.right),
-      );
-
-  svg.append('g').call(xAxis);
-  svg.append('g').call(yAxis);
-  svg.append('g').call(grid);
+  svg.append('g').call(
+    naiveGrid(x, y, {
+      posX1: margin.left,
+      posY1: margin.top,
+      posX2: width - margin.right,
+      posY2: height - margin.bottom,
+    }),
+  );
 
   svg
     .append('g')
