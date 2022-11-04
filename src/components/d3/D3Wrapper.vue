@@ -5,8 +5,9 @@ import { getUUID } from '@/composables/utils/uuid';
 
 const props = defineProps({
   chart: {
-    type: [Function, Node, d3.selection],
+    // type: [Function, Node, d3.selection, Object],
     required: true,
+    default: () => {},
   },
 });
 
