@@ -4,10 +4,9 @@ import { nextTick, ref, watch } from 'vue';
 import { getUUID } from '@/composables/utils/uuid';
 
 const props = defineProps({
-  chart: {
-    // type: [Function, Node, d3.selection, Object],
+  node: {
+    type: Node,
     required: true,
-    default: () => {},
   },
 });
 
@@ -20,13 +19,7 @@ function mountD3Component() {
     .attr('class', 'd3-component')
     .attr('id', `d3-component-${uuid}`);
 
-  if (props.chart instanceof Node) {
-    template.append(() => props.chart);
-  } else if (props.chart instanceof Function) {
-    template.append(() => props.chart());
-  } else if (props.chart instanceof d3.selection) {
-    template.append(() => props.chart.node());
-  }
+  template.append(() => props.node);
 
   container.value.appendChild(template.node());
 }
@@ -36,7 +29,7 @@ nextTick(() => {
 });
 
 watch(
-  () => props.chart,
+  () => props.node,
   () => {
     d3.select(`#d3-component-${uuid}`).remove();
     mountD3Component();
