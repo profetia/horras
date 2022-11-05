@@ -1,13 +1,20 @@
 <script setup>
 import RectLegend from '@/components/d3/legends/RectLegend.vue';
-import BasicScatter from '@/components/d3/charts/BasicScatter.vue';
-import { ref } from 'vue';
+import TooltipScatter from '@/components/d3/charts/TooltipScatter.vue';
+import { provide, ref } from 'vue';
 import * as d3 from 'd3';
 import { discreteScheme } from '@/composables/color/scheme';
 
-const cityScheme = discreteScheme(42, 42).reverse();
+const cityScheme = discreteScheme(
+  42,
+  42,
+  d3.interpolate('rgb(135, 135, 135)', 'rgb(135, 135, 135)'),
+).reverse();
 
 const data = ref([]);
+const selected = ref([]);
+
+provide('selected', selected);
 
 const getData = async () => {
   const detailedData = await d3.csv('./static/house_pricing.csv');
@@ -25,7 +32,7 @@ getData();
   <div class="v-main">
     <div class="d-flex justify-center pb-16">
       <div class="pt-8">
-        <BasicScatter
+        <TooltipScatter
           :data="
             data.map((d) => ({
               x: d[`tsne-2d-x`],
@@ -41,7 +48,7 @@ getData();
         <div class="text-center text-h5">T-SNE</div>
       </div>
       <div class="pt-8">
-        <BasicScatter
+        <TooltipScatter
           :data="
             data.map((d) => ({
               x: d[`pca-2d-x`],
@@ -57,7 +64,7 @@ getData();
         <div class="text-center text-h5">PCA</div>
       </div>
       <div class="pt-8">
-        <BasicScatter
+        <TooltipScatter
           :data="
             data.map((d) => ({
               x: d[`mds-2d-x`],

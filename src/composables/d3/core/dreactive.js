@@ -1,6 +1,5 @@
-import { computed } from "vue";
-
+import { computed } from 'vue';
 
 export function d3RefNode(callback) {
-    return computed(callback)
+  return computed(callback);
 }

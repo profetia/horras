@@ -42,7 +42,6 @@ export function naiveScatter({
     .join('circle')
     .attr('cx', (d) => x(d.x))
     .attr('cy', (d) => y(d.y))
-    .attr('id', (d, id) => `c${id}`)
     .attr('fill', (d) => color(d.category))
     .attr('opacity', 0.7)
     .attr('z-index', 1)
