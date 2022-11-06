@@ -1,7 +1,7 @@
 <script setup>
 import * as d3 from 'd3';
 import { nextTick, ref, watch } from 'vue';
-import { getUUID } from '@/composables/utils/uuid';
+import { getUUID } from '@/composables/d3/utils/uuid';
 
 const props = defineProps({
   node: {

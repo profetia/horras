@@ -1,9 +1,9 @@
 <script setup>
-import RectLegend from '@/components/d3/legends/RectLegend.vue';
-import TooltipScatter from '@/components/d3/charts/TooltipScatter.vue';
+import RectLegend from '@/components/legends/RectLegend.vue';
+import BrushScatter from './components/charts/BrushScatter.vue';
 import { provide, ref } from 'vue';
 import * as d3 from 'd3';
-import { discreteScheme } from '@/composables/color/scheme';
+import { discreteScheme } from '@/composables/d3/color/scheme';
 
 const cityScheme = discreteScheme(
   42,
@@ -32,7 +32,7 @@ getData();
   <div class="v-main">
     <div class="d-flex justify-center pb-16">
       <div class="pt-8">
-        <TooltipScatter
+        <BrushScatter
           :data="
             data.map((d) => ({
               x: d[`tsne-2d-x`],
@@ -48,7 +48,7 @@ getData();
         <div class="text-center text-h5">T-SNE</div>
       </div>
       <div class="pt-8">
-        <TooltipScatter
+        <BrushScatter
           :data="
             data.map((d) => ({
               x: d[`pca-2d-x`],
@@ -64,7 +64,7 @@ getData();
         <div class="text-center text-h5">PCA</div>
       </div>
       <div class="pt-8">
-        <TooltipScatter
+        <BrushScatter
           :data="
             data.map((d) => ({
               x: d[`mds-2d-x`],

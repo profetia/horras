@@ -1,3 +1,5 @@
+import * as d3 from 'd3';
+
 export class D3Proxy {
   #index = null;
   #node = null;
@@ -51,8 +53,18 @@ export function d3ProxyBindNodes(selection) {
   );
 }
 
+export function d3ProxyGroupNodes(
+  selection,
+  formatter = (d, i, g) => `d3-proxy-${i}`,
+) {
+  selection.classed('', (d, i, g) => {
+    const node = d3.select(g[i]);
+    node.classed(formatter(d, i, g), true);
+  });
+}
+
 /*
-@depreciated: Using Class implement now.
+@depreciated: Using class implement now.
 @since: 2022-11-06
 
 export class D3Proxy {
