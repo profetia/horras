@@ -2,14 +2,12 @@
 import * as d3 from 'd3';
 import { d3RefNode } from '@/composables/d3/core/dreactive';
 import D3Wrapper from '@/components/d3/core/D3Wrapper.vue';
-import {
-  d3ProxyBindNodes,
-  d3ProxyArray,
-  d3ProxyGroupNodes,
-} from '@/composables/d3/core/dproxy';
+import { d3ProxyBindNodes, d3ProxyArray } from '@/composables/d3/core/dproxy';
 import { basicScatter } from '@/composables/d3/charts/scatter';
 import useBrushScatter from '@/composables/charts/useBrushScatter';
 import { computed, watch } from 'vue';
+import { doDebounce } from '@/composables/utils/useDebounce';
+import { difference } from '@/composables/utils/useSet';
 
 const props = defineProps({
   data: {
@@ -87,24 +85,27 @@ const chart = d3RefNode(() => {
         doSetCursor(uid);
       }
     })
-    .on('brush', ({ selection }) => {
-      if (selection) {
-        const [[x0, y0], [x1, y1]] = selection;
-        const selected = new Set();
-        scatter.selectAll('circle').each((d, i, g) => {
-          const node = d3.select(g[i]);
-          if (
-            x0 < node.attr('cx') &&
-            node.attr('cx') < x1 &&
-            y0 < node.attr('cy') &&
-            node.attr('cy') < y1
-          ) {
-            selected.add(i);
-          }
-        });
-        doUpdateBrush(selected);
-      }
-    })
+    .on(
+      'brush',
+      doDebounce(({ selection }) => {
+        if (selection) {
+          const [[x0, y0], [x1, y1]] = selection;
+          const selected = new Set();
+          scatter.selectAll('circle').each((d, i, g) => {
+            const node = d3.select(g[i]);
+            if (
+              x0 < node.attr('cx') &&
+              node.attr('cx') < x1 &&
+              y0 < node.attr('cy') &&
+              node.attr('cy') < y1
+            ) {
+              selected.add(i);
+            }
+          });
+          doUpdateBrush(selected);
+        }
+      }, 10),
+    )
     .on('end', ({ selection }) => {
       if (selection == null) {
         doResetBrush();
@@ -119,15 +120,10 @@ const chart = d3RefNode(() => {
 watch(
   () => brushed.value,
   (to, from) => {
-    if (brushed.value) {
-      const selected = new Set(to);
-      const unselected = new Set(from);
-      for (const elem of from) {
-        selected.delete(elem);
-      }
-      for (const elem of to) {
-        unselected.delete(elem);
-      }
+    if (to) {
+      const selected = difference(to, from);
+      const unselected = difference(from, to);
+
       for (const i of selected) {
         const node = d3.select(proxiedData.value[i].getD3Node());
         node.attr('fill', '#8dd3c7').attr('opacity', '1');
