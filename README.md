@@ -7,21 +7,23 @@
 GET /heatmap
 
 #### request
+
 ```json
 {
-    // empty
+  // empty
 }
 ```
 
 #### Response
 
-an array with shape of 150x24 
+an array with shape of 150x24
 
-```json
+```javascript
 [ // The first dim indicate the date id
-    [200, 0, 123 ..., 123], // the second dim indicate the clock id at that date
-    [200, 0, 123 ..., 123], 
-    [200, 0, 123 ..., 123], 
+    [200, 0, 123, ..., 123], // the second dim indicate the clock id at that date
+    [200, 0, 123, ..., 123],
+    [200, 0, 123, ..., 123],
+    ...
 ]
 ```
 
@@ -29,52 +31,59 @@ an array with shape of 150x24
 
 GET /geometry
 
+Get the map view data.
+
 #### Request
-```json
+
+```javascript
 {
-   	"date_range": 1, // 0 ~ 200
-    "clock_range": 1, // 0 ~ 23
+  "date_range": [1, 133], // 0 ~ 200
+  "clock_range": [0, 21] // 0 ~ 23
 }
 ```
 
 #### Response
 
-```json
+An array of nodes.
+
+```javascript
 [
-    {
-        "id": 123, // int, Unique id of node
-        "lat": 23.1, // float
-        "lng": 27.3, // float
-        "start_num": 234, // int
-        "dest_num": 567, // int
-    },
+  {
+    "id": 123, // int, unique id of node
+    "lat": 23.1, // float
+    "lng": 27.3, // float
+    "start_num": 234, // int
+    "dest_num": 567 // int
+  },
+  ...
 ]
 ```
 
 ### Topology
 
-GET /tpology
+GET /topology
 
 #### Request
 
-```json
-{ 
-    "nodes": [1, 7, 23], // an array of int, unique id of nodes
-    "date_range": 1,
-    "clock_range": 1
+```javascript
+{
+  "nodes": [1, 7, 23], // an array of int, unique id of nodes
+  "date_range": [1, 3],
+  "clock_range": [3, 12]
 }
 ```
 
-```json
+```javascript
 {
-    "nodes": [1, 7, 23, 47, 58, 79],
-    "edges": [
-        {
-            "x": 2,
-            "y": 7,
-            "xy_num": 32, // order num of x to y
-            "yx_num": 47, //
-        }
-    ]
+  "nodes": [1, 7, 23, 47, 58, 79],
+  "edges": [
+    {
+      "x": 2,
+      "y": 7,
+      "xy_num": 32, // order num of x to y
+      "yx_num": 47 //
+    },
+    ...
+  ]
 }
 ```
