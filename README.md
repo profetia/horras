@@ -8,7 +8,7 @@ GET /heatmap
 
 #### request
 
-```json
+```javascript
 {
   // empty
 }
@@ -72,6 +72,8 @@ GET /topology
   "clock_range": [3, 12]
 }
 ```
+
+#### Response
 
 ```javascript
 {
