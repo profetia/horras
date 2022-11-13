@@ -8,7 +8,7 @@ let uuid = 0;
 
 export default () => {
   const doResetBrush = () => {
-    brushed.value.clear();
+    brushed.value = new Set();
   };
 
   const doUpdateBrush = (target) => {
