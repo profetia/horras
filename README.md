@@ -50,8 +50,6 @@ An array of nodes.
 [
   {
     "id": 123, // int, unique id of node
-    "lat": 23.1, // float
-    "lng": 27.3, // float
     "start_num": 234, // int
     "dest_num": 567 // int
   },
