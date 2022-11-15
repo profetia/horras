@@ -23,4 +23,4 @@ pnpm-debug.log*
 *.sw?
 
 # Customize
-/static
+static/example
