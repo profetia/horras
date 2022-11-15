@@ -51,7 +51,11 @@ An array of nodes.
 ```javascript
 [
   {
-    "id": 123, // int, unique id of node
+    "id": 46010701, // int, unique id of node
+    // <geo_json_id><num_node_id>
+    // geo_json_id: 460107
+    // num_node_id: 01
+    // this means the node is the 01th node in geo_json 460107
     "start_num": 234, // int
     "dest_num": 567 // int
   },
@@ -77,7 +81,7 @@ GET /topology
 
 ```javascript
 {
-  "nodes": [1, 7, 23, 47, 58, 79],
+  "nodes": [46010701, 46010702, 46010733, 46010708, 46010708, 46010709],
   "edges": [
     {
       "x": 2,
