@@ -54,14 +54,6 @@ export function naiveHeatmap(
               .tickFormat((x) => x)
               .tickSize(30),
           )
-          .call((g) =>
-            g
-              .select('.tick text')
-              .clone()
-              .attr('dy', '2em')
-              .style('font-weight', 'bold')
-              .text('Measles vaccine introduced'),
-          )
           .call((g) => g.select('.domain').remove()),
       );
 
@@ -87,15 +79,15 @@ export function naiveHeatmap(
     .data(data.value)
     .join('g')
     .attr('transform', (d, i) => {
-      return `translate(0,${y(i)})`;
+      return `translate(0,${(y(1) * i) / 2})`;
     })
     .selectAll('rect')
     .data((d) => d)
     .join('rect')
-    .attr('x', (d, i) => x(i) + 1)
+    .attr('x', (d, i) => x(i))
     .attr('width', (d, i) => x(i + 1) - x(i) - 1)
-    .attr('height', (d, i) => y(i + 1) - y(i))
-    .attr('fill', (d) => (isNaN(d) ? '#eee' : d === 0 ? '#fff' : color(d)));
+    .attr('height', y(1) - y(0) + 1)
+    .attr('fill', (d) => color(d));
 
   return svg;
 }

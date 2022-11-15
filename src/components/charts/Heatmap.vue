@@ -10,11 +10,11 @@ import useHeatmap from '@/composables/charts/useHeatmap';
 const props = defineProps({
   width: {
     type: [String, Number],
-    default: 1600,
+    default: 2400,
   },
   height: {
     type: [String, Number],
-    default: 500,
+    default: 450,
   },
   margin: {
     type: Object,
