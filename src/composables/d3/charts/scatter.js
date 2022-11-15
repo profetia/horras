@@ -17,7 +17,7 @@ export function naiveScatter({
   xDomain = [0, 1],
   yDomain = [0, 1],
   scheme = d3.schemeCategory10,
-} = {}) {
+}) {
   const svg = d3
     .create('svg')
     .attr('viewBox', [0, 0, width, height])
