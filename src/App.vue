@@ -4,10 +4,10 @@ import Heatmap from './components/charts/Heatmap.vue';
 <template>
   <div class="v-main">
     <div class="d-flex justify-center pb-16">
-      <Heatmap />
+      <Geometry />
     </div>
     <div class="d-flex justify-center">
-      <Geometry />
+      <Heatmap />
     </div>
   </div>
 </template>
