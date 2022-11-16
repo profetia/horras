@@ -13,6 +13,10 @@ import { createApp } from 'vue';
 // Plugins
 import { registerPlugins } from '@/plugins';
 import vuetify from './plugins/vuetify';
+import './plugins/leaflet';
+
+// Styles
+import '../css/leaflet.css';
 
 const app = createApp(App);
 
