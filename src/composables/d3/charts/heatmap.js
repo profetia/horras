@@ -12,14 +12,14 @@ export function naiveHeatmap(
       bottom: 40,
       left: 30,
     },
-    heatmapColor = d3.interpolateRdBu,
+    heatmapColor = d3.interpolateRdPu,
   },
   data,
 ) {
   if (data.value.length === 0) {
     return d3.create('svg');
   }
-  const color = d3.scaleSequentialSqrt(
+  const color = d3.scaleSequentialPow(
     [0, data.value.length ? d3.max(d3.max(data.value)) : 0],
     heatmapColor,
   );

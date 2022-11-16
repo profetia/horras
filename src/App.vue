@@ -1,12 +1,5 @@
 <script setup>
-import { provide, ref } from 'vue';
-import * as d3 from 'd3';
-import Heatmap from '@/components/charts/Heatmap.vue';
-import Geometry from '@/components/charts/Geometry.vue';
-
-const selected = ref([]);
-
-provide('selected', selected);
+import Heatmap from './components/charts/Heatmap.vue';
 </script>
 <template>
   <div class="v-main">
