@@ -56,6 +56,8 @@ An array of nodes.
     // geo_json_id: 460107
     // num_node_id: 01
     // this means the node is the 01th node in geo_json 460107
+    "lng": 20.00
+    "lat": 110.11
     "start_num": 234, // int
     "dest_num": 567 // int
   },
@@ -71,7 +73,7 @@ GET /topology
 
 ```javascript
 {
-  "nodes": [1, 7, 23], // an array of int, unique id of nodes
+  "nodes": [46010701, 46010702], // an array of int, unique id of nodes
   "date_range": [1, 3],
   "clock_range": [3, 12]
 }

@@ -10,6 +10,7 @@ export function heatmap({
   latField = 'lat',
   lngField = 'lng',
   valueField = 'count',
+  useLocalExtrema = false,
 } = {}) {
   const config = {
     radius,
@@ -18,7 +19,7 @@ export function heatmap({
     lngField,
     valueField,
     scaleRadius: true,
-    useLocalExtrema: true,
+    useLocalExtrema,
   };
 
   if (maxOpacity && minOpacity) {
