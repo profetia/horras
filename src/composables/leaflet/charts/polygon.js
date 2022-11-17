@@ -2,12 +2,12 @@ import * as L from 'leaflet';
 
 export function polygon({
   data,
-  map,
   color = 'white',
   opacity = 0.8,
   weight = 2,
   fillOpacity = 0.2,
   dashArray = '3',
+  eventHandlers = {},
 }) {
   const polygonLayer = L.geoJSON(data, {
     style: (feature) => ({
@@ -34,9 +34,7 @@ export function polygon({
         mouseout: (e) => {
           polygonLayer.resetStyle(e.target);
         },
-        click: (e) => {
-          map.fitBounds(e.target.getBounds());
-        },
+        ...eventHandlers,
       });
     },
   });
