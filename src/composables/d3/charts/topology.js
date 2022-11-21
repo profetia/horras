@@ -11,8 +11,6 @@ export function topoGraph({
     left: 30,
   },
 } = {}) {
-  // console.log(data);
-
   if (!data.nodes || data.nodes.length === 0) {
     return d3.create('svg');
   }
@@ -45,20 +43,12 @@ export function topoGraph({
 
   // generate the path
   let pathDrawing = (x1, x2, y1, y2) => {
-    let dx = 0.25;
-    let dy = ((y2 - y1) / (x2 - x1)) * dx;
-    let cpx = (0.5 + dx) * x1 + (0.5 - dx) * x2;
-    let cpy = 1.2 * ((0.5 + dy) * y1 + (0.5 - dy) * y2);
     const path = d3.path();
     path.moveTo(x1, y1);
-    let distence = Math.pow((x1 - x2) ** 2 + (y1 - y2) ** 2, 0.5);
-    //path.arcTo(x1, y1, x2, y2, Math.PI / 2)
     path.lineTo(x2, y2);
-    // console.log(path.toString());
     return path.toString();
   };
   let pathDrawingForD = (d) => {
-    // console.log(d);
     return pathDrawing(d.source.x, d.target.x, d.source.y, d.target.y);
   };
 
@@ -85,19 +75,6 @@ export function topoGraph({
     return med;
   };
 
-  // initialize
-  const link = svg
-    .selectAll('.lines')
-    .data(links)
-    .join('g')
-    .attr('class', 'lines');
-  const node = svg
-    .selectAll('circle')
-    .data(nodes)
-    .join('circle')
-    .attr('r', 5)
-    .style('fill', '#69b3a2');
-
   const simulation = d3
     .forceSimulation(nodes) // Force algorithm is applied to data.nodes
     .force(
@@ -112,6 +89,43 @@ export function topoGraph({
     .force('charge', d3.forceManyBody().strength(-150)) // This adds repulsion between nodes. Play with the -400 for the repulsion strength
     .force('center', d3.forceCenter(width / 2, height / 2)) // This force attracts nodes to the center of the svg area
     .on('end', ticked);
+
+  let drag = (simulation) => {
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    return d3
+      .drag()
+      .on('start', dragstarted)
+      .on('drag', dragged)
+      .on('end', dragended);
+  };
+  // initialize
+  const link = svg
+    .selectAll('.lines')
+    .data(links)
+    .join('g')
+    .attr('class', 'lines');
+  const node = svg
+    .selectAll('circle')
+    .data(nodes)
+    .join('circle')
+    .attr('r', 5)
+    .style('fill', '#69b3a2');
 
   function ticked() {
     link
@@ -129,7 +143,8 @@ export function topoGraph({
       })
       .attr('cy', function (d) {
         return d.y;
-      });
+      })
+      .call(drag(simulation));
   }
   return svg;
 }
