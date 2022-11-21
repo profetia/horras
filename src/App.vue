@@ -1,6 +1,7 @@
 <script setup>
 import Heatmap from '@/components/charts/Heatmap.vue';
 import Geometry from '@/components/charts/Geometry.vue';
+import TopoGraph from '@/components/charts/TopoGraph.vue';
 import useSnackbar from '@/composables/global/useSnackbar';
 
 const { snackbar } = useSnackbar();
@@ -15,6 +16,9 @@ const { snackbar } = useSnackbar();
         <div class="d-flex justify-center">
           <Heatmap />
         </div>
+      </div>
+      <div>
+        <TopoGraph />
       </div>
       <v-snackbar
         v-model="snackbar.show"

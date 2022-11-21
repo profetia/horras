@@ -73,7 +73,9 @@ GET /topology
 
 ```javascript
 {
-  "nodes": [46010701, 46010702], // an array of int, unique id of nodes
+  "nodes": [46010701, 46010702], 
+  // chosen nodes
+  // an array of int, unique id of nodes
   "date_range": [1, 3],
   "clock_range": [3, 12]
 }
@@ -83,11 +85,12 @@ GET /topology
 
 ```javascript
 {
-  "nodes": [46010701, 46010702, 46010733, 46010708, 46010708, 46010709],
+  "nodes": [46010701, 46010702, 46010723, 46010708, 46010709],
+  // all nodes include the chosen and the unchosen
   "edges": [
     {
-      "x": 2,
-      "y": 7,
+      "x": 46010702,
+      "y": 46010708,
       "xy_num": 32, // order num of x to y
       "yx_num": 47 //
     },
