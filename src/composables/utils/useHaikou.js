@@ -10,6 +10,21 @@ const registry = {
   460108: GeoJson460108,
 };
 
+function formatToTwoDigits(num) {
+  return num < 10 ? `0${num}` : num;
+}
+
+(function init() {
+  for (const key in registry) {
+    registry[key].features.forEach((feature, index) => {
+      feature.properties = {
+        ...feature.properties,
+        adcode: `${key}${formatToTwoDigits(index)}`,
+      };
+    });
+  }
+})();
+
 export function getHaikouAll() {
   const haikouAll = {
     type: 'FeatureCollection',

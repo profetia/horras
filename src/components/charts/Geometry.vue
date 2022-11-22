@@ -5,8 +5,10 @@ import LeafletWrapper from '@/components/leaflet/core/LeafletWrapper.vue';
 import { heatmap } from '@/composables/leaflet/charts/heatmap';
 import { polygon } from '@/composables/leaflet/charts/polygon';
 import { getHaikouAll } from '@/composables/utils/useHaikou';
+import useChartState from '@/composables/charts/useChartState';
 
 const { geometry } = useGeometry();
+const { appendHighlights } = useChartState();
 
 // console.log(geometry.value);
 
@@ -50,6 +52,8 @@ const initFn = (node, { geometry }) => {
     eventHandlers: {
       click: (e) => {
         // haikouMap.fitBounds(e.target.getBounds());
+        const adcode = e.target.feature.properties.adcode;
+        appendHighlights(adcode);
       },
     },
   });

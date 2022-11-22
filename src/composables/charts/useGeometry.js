@@ -13,7 +13,7 @@ const geometry = computed(() => {
       data,
       // TODO: Adjust threshold
       min: Math.min(...data.map((hotspot) => hotspot.count)),
-      max: Math.min(1000, Math.max(...data.map((hotspot) => hotspot.count))),
+      max: Math.max(...data.map((hotspot) => hotspot.count)),
     };
   } else {
     return {

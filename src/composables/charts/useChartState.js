@@ -1,8 +1,8 @@
 import { reactive, ref } from 'vue';
 
 const timeRange = reactive({
-  clockRange: [119, 305],
-  dateRange: [0, 1440],
+  clockRange: [0, 1440],
+  dateRange: [119, 305],
 });
 
 const hotspots = ref([]); // locations
@@ -18,6 +18,14 @@ const setHotspots = (data) => {
   hotspots.value = data;
 };
 
+const setHighlights = (data) => {
+  highlights.value = data;
+};
+
+const appendHighlights = (data) => {
+  highlights.value.push(...data);
+};
+
 export default () => {
   return {
     timeRange,
@@ -26,5 +34,7 @@ export default () => {
 
     setTimeRange,
     setHotspots,
+    setHighlights,
+    appendHighlights,
   };
 };
