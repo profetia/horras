@@ -95,6 +95,9 @@ export function brushedHeatmap(
 ) {
   let svg = naiveHeatmap(...arguments);
 
+  // A dict to indicate whether a cell is selected
+  let isSelected = {};
+
   if (data.value.length === 0) {
     return svg;
   }
@@ -129,9 +132,13 @@ export function brushedHeatmap(
         currentY >= y0 &&
         currentY <= y1
       ) {
+        isSelected[`${currentX},${currentY}`] = true;
         node.attr('filter', 'brightness(50%)');
       } else {
+        if (isSelected[`${currentX},${currentY}`]) {
         node.attr('filter', 'brightness(100%)');
+          isSelected[`${currentX},${currentY}`] = false;
+        }
       }
     });
   };
