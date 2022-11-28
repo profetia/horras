@@ -9,7 +9,7 @@ const hotspots = ref([]); // locations
 
 const highlights = ref([]); // counties
 
-const setTimeRange = ({ dateRange, clockRange }) => {
+const setTimeRange = (dateRange, clockRange) => {
   timeRange.clockRange = clockRange;
   timeRange.dateRange = dateRange;
 };

@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
 import * as d3 from 'd3';
+import useChartState from '@/composables/charts/useChartState';
+
+const { setTimeRange } = useChartState();
 
 function defineAxis({
   xType = d3.scaleLinear(),
@@ -136,7 +139,7 @@ export function brushedHeatmap(
         node.attr('filter', 'brightness(50%)');
       } else {
         if (isSelected[`${currentX},${currentY}`]) {
-        node.attr('filter', 'brightness(100%)');
+          node.attr('filter', 'brightness(100%)');
           isSelected[`${currentX},${currentY}`] = false;
         }
       }
@@ -155,10 +158,12 @@ export function brushedHeatmap(
     let yRange = [y.invert(y0), y.invert(y1)];
 
     // Make sure xRange, yRange are non-negative integers
-    xRange = xRange.map((d) => clamp(Math.round(d), 0, data.value[0].length));
-    yRange = yRange.map((d) => clamp(Math.round(d), 0, data.value.length));
+    xRange = xRange.map((d) =>
+      clamp(Math.round(d), 0, data.value[0].length - 1),
+    );
+    yRange = yRange.map((d) => clamp(Math.round(d), 0, data.value.length - 1));
 
-    console.log(xRange, yRange);
+    setTimeRange({ yRange, xRange });
   };
 
   let brush = d3
