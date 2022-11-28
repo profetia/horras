@@ -31,7 +31,7 @@ an array with shape of 150x24
 
 ### Geometry
 
-GET /geometry
+POST /geometry
 
 Get the map view data.
 
@@ -67,13 +67,13 @@ An array of nodes.
 
 ### Topology
 
-GET /topology
+POST /topology
 
 #### Request
 
 ```javascript
 {
-  "nodes": [46010701, 46010702], 
+  "nodes": [46010701, 46010702],
   // chosen nodes
   // an array of int, unique id of nodes
   "date_range": [1, 3],
