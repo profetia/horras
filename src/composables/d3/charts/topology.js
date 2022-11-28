@@ -41,54 +41,27 @@ export function topoGraph({
 
   svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  // generate the path
-  let pathDrawing = (x1, x2, y1, y2) => {
-    const path = d3.path();
-    path.moveTo(x1, y1);
-    path.lineTo(x2, y2);
-    return path.toString();
-  };
-  let pathDrawingForD = (d) => {
-    return pathDrawing(d.source.x, d.target.x, d.source.y, d.target.y);
-  };
-
-  //split the path so we can reach （渐变）
-  let link_split = (d) => {
-    let med = [];
-    let n = 20;
-    let x_minus = (d.target.x - d.source.x) / n;
-    let y_minus = (d.target.y - d.source.y) / n;
-    for (let i = 0; i < n; i++) {
-      med.push({
-        source: {
-          x: d.source.x + x_minus * i,
-          y: d.source.y + y_minus * i,
-        },
-        target: {
-          x: d.source.x + x_minus * (i + 1),
-          y: d.source.y + y_minus * (i + 1),
-        },
-        weight: d.weight,
-        index: i / n,
-      });
-    }
-    return med;
-  };
+  function linkArc(d) {
+    const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+    return `
+        M${d.source.x},${d.source.y}
+        A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
+        `;
+  }
 
   const simulation = d3
-    .forceSimulation(nodes) // Force algorithm is applied to data.nodes
+    .forceSimulation(nodes)
     .force(
       'link',
-      d3
-        .forceLink() // This force provides links between nodes
-        .id(function (d) {
-          return d.id;
-        }) // This provide  the id of a node
-        .links(links), // and this the list of links
+      d3.forceLink(links).id((d) => d.id),
     )
-    .force('charge', d3.forceManyBody().strength(-150)) // This adds repulsion between nodes. Play with the -400 for the repulsion strength
-    .force('center', d3.forceCenter(width / 2, height / 2)) // This force attracts nodes to the center of the svg area
-    .on('end', ticked);
+    .force('charge', d3.forceManyBody().strength(-20))
+    .force('center', d3.forceCenter(width / 2, height / 2).strength(0.5));
+  simulation.on('tick', () => {
+    link.attr('d', linkArc);
+    node.attr('transform', (d) => `translate(${d.x},${d.y})`);
+  });
+  // .on('end', ticked);
 
   let drag = (simulation) => {
     function dragstarted(event, d) {
@@ -103,7 +76,7 @@ export function topoGraph({
     }
 
     function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
+      if (!event.active) simulation.alphaTarget(0.1);
       d.fx = null;
       d.fy = null;
     }
@@ -115,36 +88,41 @@ export function topoGraph({
       .on('end', dragended);
   };
   // initialize
+  svg
+    .append('defs')
+    .append('marker')
+    .attr('id', `arrow-1`)
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 15)
+    .attr('refY', -0.5)
+    .attr('markerWidth', 3)
+    .attr('markerHeight', 3)
+    .attr('fill', 'red')
+    .attr('orient', 'auto')
+    .append('path')
+
+    .attr('d', 'M0,-5L10,0L0,5');
   const link = svg
+    .append('g')
+    .attr('fill', 'none')
+
     .selectAll('.lines')
     .data(links)
-    .join('g')
-    .attr('class', 'lines');
+    .join('path')
+    .attr('class', 'lines')
+    .style('stroke', 'red')
+    .attr('opacity', (d) => d.weight / 10000 + 0.25)
+    .attr('stroke-width', 2)
+    .attr('fill', 'none')
+    .attr('marker-end', (d) => `url(${new URL(`#arrow-${1}`, location)})`);
   const node = svg
     .selectAll('circle')
     .data(nodes)
     .join('circle')
+    .attr('id', (d) => `Topo_Node_${d.id}`)
     .attr('r', 5)
-    .style('fill', '#69b3a2');
+    .style('fill', '#69b3a2')
+    .call(drag(simulation));
 
-  function ticked() {
-    link
-      .selectAll('path')
-      .data((d) => link_split(d))
-      .join('path')
-      .attr('d', (d) => pathDrawingForD(d))
-      .attr('stroke-width', (d) => d.weight)
-      .attr('stroke', (d, i) => color(d.index))
-      .attr('opacity', 0.5)
-      .style('stroke-width', (d) => Math.log10(d.weight + 1));
-    node
-      .attr('cx', function (d) {
-        return d.x;
-      })
-      .attr('cy', function (d) {
-        return d.y;
-      })
-      .call(drag(simulation));
-  }
   return svg;
 }
