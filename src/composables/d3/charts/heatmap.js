@@ -34,44 +34,11 @@ export function naiveHeatmap(
     .domain([0, data.value.length])
     .rangeRound([margin.top, height - margin.bottom]);
 
-  const xAxis = (g) =>
-    g
-      .call((g) =>
-        g
-          .append('g')
-          .attr('transform', `translate(0,${margin.top})`)
-          .call(d3.axisTop(x).ticks(null, 'd'))
-          .call((g) => g.select('.domain').remove()),
-      )
-      .call((g) =>
-        g
-          .append('g')
-          .attr('transform', `translate(0,${width - margin.bottom})`)
-          .call(
-            d3
-              .axisBottom(x)
-              .tickValues(d3.range(0, data.value[0].length, 10))
-              .tickFormat((x) => x)
-              .tickSize(30),
-          )
-          .call((g) => g.select('.domain').remove()),
-      );
-
-  const yAxis = (g) =>
-    g
-      .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickSize(0))
-      .call((g) => g.select('.domain').remove());
-
   const svg = d3
     .create('svg')
     .attr('viewBox', [0, 0, width, height])
     .attr('width', width)
     .attr('height', height);
-
-  svg.append('g').call(xAxis);
-
-  svg.append('g').call(yAxis);
 
   svg
     .append('g')
@@ -86,7 +53,7 @@ export function naiveHeatmap(
     .join('rect')
     .attr('x', (d, i) => x(i))
     .attr('width', (d, i) => x(i + 1) - x(i) - 1)
-    .attr('height', y(1) - y(0) + 1)
+    .attr('height', y(1) - y(0) + 3)
     .attr('fill', (d) => color(d));
 
   return svg;
