@@ -9,6 +9,11 @@ const hotspots = ref([]); // locations
 
 const highlights = ref([]); // counties
 
+const loading = reactive({
+  geometry: false,
+  topology: false,
+});
+
 const setTimeRange = (dateRange, clockRange) => {
   timeRange.clockRange = clockRange;
   timeRange.dateRange = dateRange;
@@ -31,6 +36,7 @@ export default () => {
     timeRange,
     hotspots,
     highlights,
+    loading,
 
     setTimeRange,
     setHotspots,

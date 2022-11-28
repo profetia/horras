@@ -10,7 +10,7 @@ import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
 import { ref } from 'vue';
 
 const { geometry } = useGeometry();
-const { appendHighlights } = useChartState();
+const { appendHighlights, loading } = useChartState();
 
 const isAdoptive = ref(false);
 // console.log(geometry.value);

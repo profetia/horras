@@ -4,7 +4,7 @@ import { doGet, doPost } from '@/composables/utils/useFetching';
 import useChartState from '@/composables/charts/useChartState';
 
 const { showSnackbar } = useSnackbar();
-const { timeRange, setHotspots } = useChartState();
+const { timeRange, loading, setHotspots } = useChartState();
 
 const fetchHeatmapData = async () => {
   let data = [];
@@ -58,6 +58,7 @@ export default () => {
   watch(
     timeRange,
     async (value, oldValue) => {
+      loading.geometry = true;
       const hotspots = await fetchHotspots();
       setHotspots(hotspots);
     },
