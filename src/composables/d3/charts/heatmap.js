@@ -163,7 +163,7 @@ export function brushedHeatmap(
     );
     yRange = yRange.map((d) => clamp(Math.round(d), 0, data.value.length - 1));
 
-    setTimeRange({ yRange, xRange });
+    setTimeRange(xRange, yRange);
   };
 
   let brush = d3

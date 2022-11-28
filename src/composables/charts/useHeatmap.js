@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import useSnackbar from '@/composables/global/useSnackbar';
 import { doGet, doPost } from '@/composables/utils/useFetching';
 import useChartState from '@/composables/charts/useChartState';
@@ -22,6 +22,8 @@ const fetchHeatmapData = async () => {
 };
 
 const fetchHotspots = async () => {
+  const dateLowerBound = 119;
+
   let data = [];
   await doPost(
     'geometry',
@@ -30,11 +32,11 @@ const fetchHotspots = async () => {
     },
     (_erorr) => {
       showSnackbar('Error fetching hotspots data', 'error');
-      console.log(_erorr);
+      // console.log(_erorr);
     },
   )({
-    date_range: timeRange.dateRange,
-    clock_range: timeRange.clockRange,
+    date_range: timeRange.dateRange.map((value) => value + dateLowerBound),
+    clock_range: timeRange.clockRange.map((value) => value * 60),
   });
   return data;
 };
@@ -48,12 +50,21 @@ const processHeatmap = async () => {
   // console.log(data);
   // console.log(data.length);
   heatmapData.value = data;
-  const hotspots = await fetchHotspots();
-  setHotspots(hotspots);
 };
 
 export default () => {
   processHeatmap();
+
+  watch(
+    timeRange,
+    async (value, oldValue) => {
+      const hotspots = await fetchHotspots();
+      setHotspots(hotspots);
+    },
+    {
+      immediate: true,
+    },
+  );
 
   return {
     heatmapData,

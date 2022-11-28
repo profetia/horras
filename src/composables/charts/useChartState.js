@@ -1,8 +1,8 @@
 import { reactive, ref } from 'vue';
 
 const timeRange = reactive({
-  clockRange: [0, 1440],
-  dateRange: [119, 305],
+  clockRange: [0, 24],
+  dateRange: [0, 186],
 });
 
 const hotspots = ref([]); // locations
