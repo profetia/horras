@@ -1,29 +1,28 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import * as d3 from 'd3';
 import { d3RefNode } from '@/composables/d3/core/dreactive';
 import D3Wrapper from '@/components/d3/core/D3Wrapper.vue';
 
 import { naiveHeatmap } from '@/composables/d3/charts/heatmap';
-import { onMounted, watch } from 'vue';
 import useHeatmap from '@/composables/charts/useHeatmap';
 
 const props = defineProps({
   width: {
     type: [String, Number],
-    default: 2400,
+    default: 1800,
   },
   height: {
     type: [String, Number],
-    default: 450,
+    default: 300,
   },
   margin: {
     type: Object,
-    default: {
+    default: () => ({
       top: 20,
       right: 30,
       left: 30,
       bottom: 40,
-    },
+    }),
   },
 });
 

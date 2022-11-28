@@ -1,10 +1,10 @@
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import useSnackbar from '@/composables/global/useSnackbar';
 import { doGet, doPost } from '@/composables/utils/useFetching';
 import useChartState from '@/composables/charts/useChartState';
 
 const { showSnackbar } = useSnackbar();
-const { timeRange, setTimeRange, setHotspots } = useChartState();
+const { timeRange, setHotspots } = useChartState();
 
 const fetchHeatmapData = async () => {
   let data = [];
@@ -15,6 +15,7 @@ const fetchHeatmapData = async () => {
     },
     (_erorr) => {
       showSnackbar('Error fetching heatmap data', 'error');
+      console.log(_erorr);
     },
   )();
   return data;
@@ -29,6 +30,7 @@ const fetchHotspots = async () => {
     },
     (_erorr) => {
       showSnackbar('Error fetching hotspots data', 'error');
+      console.log(_erorr);
     },
   )({
     date_range: timeRange.dateRange,

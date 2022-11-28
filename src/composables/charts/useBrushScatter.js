@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 
 const brushed = reactive({
   value: new Set(),

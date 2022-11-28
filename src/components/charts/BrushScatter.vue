@@ -24,12 +24,12 @@ const props = defineProps({
   },
   margin: {
     type: Object,
-    default: {
+    default: () => ({
       top: 20,
       right: 30,
       left: 30,
       bottom: 40,
-    },
+    }),
   },
   xType: {
     default: d3.scaleLinear,
@@ -39,11 +39,11 @@ const props = defineProps({
   },
   xDomain: {
     type: Array,
-    default: [0, 1],
+    default: () => [0, 1],
   },
   yDomain: {
     type: Array,
-    default: [0, 1],
+    default: () => [0, 1],
   },
   xLabel: {
     type: String,
@@ -138,7 +138,7 @@ watch(
 
 watch(
   () => brushed.cursor,
-  (to, from) => {
+  () => {
     if (brushed.cursor && brushed.cursor != uid) {
       d3.select(chart.value).call(brush.move, null);
     }
