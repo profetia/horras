@@ -27,11 +27,13 @@ export function naiveHeatmap(
   const x = d3
     .scaleLinear()
     .domain([0, data.value[0].length])
+    .nice()
     .rangeRound([margin.left, width - margin.right]);
 
   const y = d3
     .scaleLinear()
     .domain([0, data.value.length])
+    .nice()
     .rangeRound([margin.top, height - margin.bottom]);
 
   const svg = d3
@@ -46,14 +48,16 @@ export function naiveHeatmap(
     .data(data.value)
     .join('g')
     .attr('transform', (d, i) => {
-      return `translate(0,${(y(1) * i) / 2})`;
+      return `translate(0,${y(1) + (y(2) - y(1)) * i})`;
     })
     .selectAll('rect')
     .data((d) => d)
     .join('rect')
-    .attr('x', (d, i) => x(i))
-    .attr('width', (d, i) => x(i + 1) - x(i) - 1)
-    .attr('height', y(1) - y(0) + 3)
+    .attr('x', (d, i) => {
+      return x(1) + (x(2) - x(1)) * i;
+    })
+    .attr('width', (d, i) => x(2) - x(1) - 1)
+    .attr('height', (d, i) => y(2) - y(1) - 1)
     .attr('fill', (d) => color(d));
 
   return svg;
