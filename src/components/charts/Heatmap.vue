@@ -3,7 +3,7 @@
 import { d3RefNode } from '@/composables/d3/core/dreactive';
 import D3Wrapper from '@/components/d3/core/D3Wrapper.vue';
 
-import { naiveHeatmap } from '@/composables/d3/charts/heatmap';
+import { brushedHeatmap } from '@/composables/d3/charts/heatmap';
 import useHeatmap from '@/composables/charts/useHeatmap';
 
 const props = defineProps({
@@ -29,7 +29,7 @@ const props = defineProps({
 const { heatmapData } = useHeatmap(props);
 
 const chart = d3RefNode(() => {
-  let scatter = naiveHeatmap(props, heatmapData);
+  let scatter = brushedHeatmap(props, heatmapData);
   return scatter.node();
 });
 </script>
