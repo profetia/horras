@@ -1,6 +1,5 @@
+/* eslint-disable no-unused-vars */
 import * as d3 from 'd3';
-import { xAxis, yAxis } from '@/composables/d3/decoration/axis';
-import { naiveGrid } from '@/composables/d3/decoration/grid';
 
 function defineAxis({
   xType = d3.scaleLinear(),
@@ -71,8 +70,7 @@ export function naiveHeatmap(
       return x(1) + (x(2) - x(1)) * i;
     })
     .attr('cy', function (d, i, g) {
-      console.log(this.parentNode);
-      return this.parentNode.attr('cy');
+      return this.parentNode.getAttribute('cy');
     })
     .attr('width', (d, i) => x(2) - x(1) - 1)
     .attr('height', (d, i) => y(2) - y(1) - 1)
@@ -124,8 +122,6 @@ export function brushedHeatmap(
       }
       const currentX = node.attr('x');
       const currentY = node.attr('cy');
-      console.log('X', currentX, x0, x1);
-      console.log('Y', currentY, y0, y1);
 
       if (
         currentX >= x0 &&
@@ -133,10 +129,9 @@ export function brushedHeatmap(
         currentY >= y0 &&
         currentY <= y1
       ) {
-        console.log(currentX, currentY);
-        console.log(x0, y0, x1, y1);
-        node.attr('fill', 'red');
+        node.attr('filter', 'brightness(50%)');
       } else {
+        node.attr('filter', 'brightness(100%)');
       }
     });
   };
