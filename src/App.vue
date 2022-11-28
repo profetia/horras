@@ -10,26 +10,23 @@ const { snackbar } = useSnackbar();
   <v-app>
     <v-main>
       <v-toolbar
-        title="Horras: Haikou Online Ride-hailing Records Analysis System"
+        title="Haikou Online Ride-hailing Records Analysis System"
         elevation="3"
       ></v-toolbar>
       <div class="pt-16">
         <div class="mx-4">
-          <div class="d-flex justify-space-between pb-16">
-            <v-card>
-              <div>
-                <Geometry />
-              </div>
-              <v-card-actions>
-                <v-btn>hi</v-btn>
-              </v-card-actions>
-            </v-card>
-            <div>
-              <TopoGraph />
-            </div>
-          </div>
           <div class="d-flex justify-center">
-            <Heatmap />
+            <div>
+              <div class="d-flex justify-space-between pb-16">
+                <div>
+                  <Geometry />
+                </div>
+                <div>
+                  <TopoGraph />
+                </div>
+              </div>
+              <Heatmap />
+            </div>
           </div>
         </div>
       </div>
