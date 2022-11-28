@@ -6,6 +6,7 @@ import { heatmap } from '@/composables/leaflet/charts/heatmap';
 import { polygon } from '@/composables/leaflet/charts/polygon';
 import { getHaikouAll } from '@/composables/utils/useHaikou';
 import useChartState from '@/composables/charts/useChartState';
+import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
 
 const { geometry } = useGeometry();
 const { appendHighlights } = useChartState();
@@ -13,14 +14,7 @@ const { appendHighlights } = useChartState();
 // console.log(geometry.value);
 
 const initFn = (node, { geometry }) => {
-  const baseLayer = L.tileLayer(
-    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    // 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    // 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    // 'https://{s}.tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=MOEv0c7HeIGtkp6COaRzlt1QhSeaYLo1QzHCHu8RUY4oMeY72DfQoyw9KxQmIIVL',
-    // 'https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token=MOEv0c7HeIGtkp6COaRzlt1QhSeaYLo1QzHCHu8RUY4oMeY72DfQoyw9KxQmIIVL',
-    // 'https://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey=63bc80aa57164b0c94d24cba52c45bb4',
-  );
+  const baseLayer = L.tileLayer(...tileOpenStreetNormal);
 
   // console.log(geometry);
   // console.log(geometry.data.filter((item) => item.count > geometry.max));
@@ -64,8 +58,8 @@ const initFn = (node, { geometry }) => {
 <template>
   <LeafletWrapper
     :callback="initFn"
-    width="1024"
-    height="1024"
+    width="1200"
+    height="900"
     :args="{ geometry }"
   />
 </template>

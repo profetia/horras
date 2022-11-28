@@ -10,7 +10,7 @@ import useTopoGraph from '@/composables/charts/useTopoGraph';
 const props = defineProps({
   width: {
     type: [String, Number],
-    default: 2400,
+    default: 800,
   },
   height: {
     type: [String, Number],

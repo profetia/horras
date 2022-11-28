@@ -9,16 +9,29 @@ const { snackbar } = useSnackbar();
 <template>
   <v-app>
     <v-main>
-      <div>
-        <div class="d-flex justify-center pb-16">
-          <Geometry />
+      <v-toolbar
+        title="Horras: Haikou Online Ride-hailing Records Analysis System"
+        elevation="3"
+      ></v-toolbar>
+      <div class="pt-16">
+        <div class="mx-4">
+          <div class="d-flex justify-space-between pb-16">
+            <v-card>
+              <div>
+                <Geometry />
+              </div>
+              <v-card-actions>
+                <v-btn>hi</v-btn>
+              </v-card-actions>
+            </v-card>
+            <div>
+              <TopoGraph />
+            </div>
+          </div>
+          <div class="d-flex justify-center">
+            <Heatmap />
+          </div>
         </div>
-        <div class="d-flex justify-center">
-          <Heatmap />
-        </div>
-      </div>
-      <div>
-        <TopoGraph />
       </div>
       <v-snackbar
         v-model="snackbar.show"
