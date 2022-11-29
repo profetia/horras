@@ -40,12 +40,19 @@ const fetchHotspots = async () => {
   return data;
 };
 
+const scaleFunction = (value) => {
+  // return Math.exp(value / 1000);
+  return value;
+};
+
 const heatmapData = ref([]);
 
 const processHeatmap = async () => {
   let data = await fetchHeatmapData();
   // console.log(data);
   data = data[0].map((_, colIndex) => data.map((row) => row[colIndex]));
+  data = data.map((row) => row.map((value) => scaleFunction(value)));
+  console.log(data);
   // console.log(data);
   // console.log(data.length);
   heatmapData.value = data;
