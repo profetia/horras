@@ -7,32 +7,19 @@ import { polygon } from '@/composables/leaflet/charts/polygon';
 import { getHaikouAll } from '@/composables/utils/useHaikou';
 import useChartState from '@/composables/charts/useChartState';
 import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
-import { ref } from 'vue';
 
-const { geometry } = useGeometry();
+const { geometry, chartConfig } = useGeometry();
 const { appendHighlights, loading } = useChartState();
 
-const isAdoptive = ref(false);
-// console.log(geometry.value);
-
-const initFn = (node, { geometry, isAdoptive }) => {
+const initFn = (node, { geometry, chartConfig }) => {
   const baseLayer = L.tileLayer(...tileOpenStreetNormal);
 
   // console.log(geometry);
   // console.log(geometry.data.filter((item) => item.count > geometry.max));
 
-  const sampledData = {
-    data: geometry.data.map((item) => ({
-      ...item,
-      count: Math.log(item.count),
-    })),
-    max: Math.log(geometry.max),
-    min: Math.log(geometry.min),
-  };
-
   const heatmapLayer = heatmap({
-    data: isAdoptive ? geometry : sampledData,
-    useLocalExtrema: isAdoptive,
+    data: geometry,
+    useLocalExtrema: chartConfig.adoptive,
   });
 
   const haikouMap = L.map(node, {
@@ -71,27 +58,61 @@ const initFn = (node, { geometry, isAdoptive }) => {
     <div>
       <LeafletWrapper
         :callback="initFn"
-        width="800"
-        height="600"
-        :args="{ geometry, isAdoptive }"
+        :width="chartConfig.width"
+        :height="chartConfig.height"
+        :args="{ geometry, chartConfig }"
       />
     </div>
-    <div style="margin-top: -100px">
-      <v-chip
-        label
-        variant="elevated"
-        color="teal"
-        text-color="white"
-        style="z-index: 10000"
-        class="ml-3 mb-3 pl-1"
-      >
-        <v-checkbox
-          hide-details
-          v-model="isAdoptive"
-          label="Adoptive Sample"
-          class="font-weight-bold"
-        ></v-checkbox>
-      </v-chip>
+    <div style="margin-top: -100px" class="d-flex justify-space-between">
+      <div class="d-flex flex-column justify-end">
+        <v-chip
+          label
+          variant="elevated"
+          color="teal"
+          text-color="white"
+          style="z-index: 10000"
+          class="ml-3 mb-3 pl-1"
+        >
+          <v-checkbox
+            hide-details
+            v-model="chartConfig.adoptive"
+            label="Adoptive Sample"
+            class="font-weight-bold"
+          ></v-checkbox>
+        </v-chip>
+      </div>
+      <div class="d-flex flex-column">
+        <v-chip
+          label
+          variant="elevated"
+          color="warning"
+          style="z-index: 10000"
+          class="mr-3 mb-3 pl-1"
+        >
+          <v-checkbox
+            hide-details
+            v-model="chartConfig.layers"
+            label="Departures Layer"
+            value="departures"
+            class="font-weight-bold"
+          ></v-checkbox>
+        </v-chip>
+        <v-chip
+          label
+          variant="elevated"
+          color="info"
+          style="z-index: 10000"
+          class="mr-3 mb-3 pl-1"
+        >
+          <v-checkbox
+            hide-details
+            v-model="chartConfig.layers"
+            label="Arrivals Layer"
+            value="arrivals"
+            class="font-weight-bold"
+          ></v-checkbox>
+        </v-chip>
+      </div>
     </div>
   </v-card>
 </template>

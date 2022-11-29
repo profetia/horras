@@ -15,7 +15,6 @@ const fetchHeatmapData = async () => {
     },
     (_erorr) => {
       showSnackbar('Error fetching heatmap data', 'error');
-      console.log(_erorr);
     },
   )();
   return data;
