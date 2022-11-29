@@ -17,15 +17,22 @@ const { snackbar } = useSnackbar();
         <div class="mx-4">
           <div class="d-flex justify-center">
             <div>
-              <div class="d-flex justify-space-between pb-16">
-                <div>
-                  <Geometry />
-                </div>
-                <div>
-                  <TopoGraph />
+              <div class="pb-16">
+                <div
+                  class="d-flex justify-space-between"
+                  style="margin-left: 50px; margin-right: 20px"
+                >
+                  <div>
+                    <Geometry />
+                  </div>
+                  <div>
+                    <TopoGraph />
+                  </div>
                 </div>
               </div>
-              <Heatmap />
+              <div>
+                <Heatmap />
+              </div>
             </div>
           </div>
         </div>
