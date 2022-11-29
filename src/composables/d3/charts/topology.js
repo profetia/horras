@@ -20,19 +20,71 @@ export function topoGraph({
   data.nodes.forEach((element) => {
     nodes.push({
       id: element,
+      in_number: d3.sum(data.edges, (d) => {
+        if (d.x == element) {
+          return d.yx_num;
+        }
+        if (d.y == element) {
+          return d.xy_num;
+        }
+      }),
+      out_number: d3.sum(data.edges, (d) => {
+        if (d.x == element) {
+          return d.xy_num;
+        }
+        if (d.y == element) {
+          return d.yx_num;
+        }
+      }),
       group: null, //provided by clustering
     });
   });
-  let color = (d) => d3.interpolateRdBu(d);
+  nodes.forEach((d) => {
+    d.sum_number = d.in_number + d.out_number;
+  });
+
+  let node_weight_scale = d3
+    .scaleLinear()
+    .domain(d3.extent(nodes, (d) => d.sum_number))
+    .range([1, 0]);
+  nodes.forEach((d) => {
+    d.weight = node_weight_scale(d.sum_number);
+  });
   let links = [];
   for (let i = 0; i < data.edges.length; i++) {
+    if (data.edges[i].x == data.edges[i].y) {
+      console.log('error on data for Topo');
+      continue;
+    }
     let weight = data.edges[i].xy_num - data.edges[i].yx_num;
-    links.push({
+    /*    links.push({
       source: weight ? data.edges[i].x : data.edges[i].y,
       target: weight ? data.edges[i].y : data.edges[i].x,
       weight: Math.abs(weight),
+    }); */ //work for linkLine
+    links.push({
+      source: data.edges[i].x,
+      target: data.edges[i].y,
+      weight: data.edges[i].xy_num,
     });
+
+    links.push({
+      source: data.edges[i].y,
+      target: data.edges[i].x,
+      weight: data.edges[i].yx_num,
+    });
+    // work for linkArc
   }
+
+  let color = (d) => d3.interpolateRdYlGn(d);
+  let color_scale = d3
+    .scaleLinear()
+    .domain(d3.extent(links, (d) => d.weight))
+    .range([1, 0]);
+  links.forEach((d) => {
+    d.weight_color = color_scale(d.weight);
+  });
+
   const svg = d3
     .create('svg')
     .attr('viewBox', [0, 0, width, height])
@@ -41,13 +93,19 @@ export function topoGraph({
 
   svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  function linkArc(d) {
+  let linkArc = (d) => {
     const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
     return `
         M${d.source.x},${d.source.y}
         A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
         `;
-  }
+  };
+  let linkLine = (d) => {
+    const path = d3.path();
+    path.moveTo(d.source.x, d.source.y);
+    path.lineTo(d.target.x, d.target.y);
+    return path.toString();
+  };
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -55,8 +113,8 @@ export function topoGraph({
       'link',
       d3.forceLink(links).id((d) => d.id),
     )
-    .force('charge', d3.forceManyBody().strength(-20))
-    .force('center', d3.forceCenter(width / 2, height / 2).strength(0.5));
+    .force('charge', d3.forceManyBody().strength(-30))
+    .force('center', d3.forceCenter(width / 2, height / 2).strength(0.7));
   simulation.on('tick', () => {
     link.attr('d', linkArc);
     node.attr('transform', (d) => `translate(${d.x},${d.y})`);
@@ -89,15 +147,18 @@ export function topoGraph({
   };
   // initialize
   svg
-    .append('defs')
+    .selectAll('defs')
+    .data(links)
+    .join('defs')
     .append('marker')
-    .attr('id', `arrow-1`)
+    .attr('id', (d) => `Topo_arrow_${d.source.id}_${d.target.id}`)
     .attr('viewBox', '0 -5 10 10')
     .attr('refX', 15)
     .attr('refY', -0.5)
     .attr('markerWidth', 3)
-    .attr('markerHeight', 3)
-    .attr('fill', 'red')
+    .attr('markerHeight', 5)
+    .attr('fill', (d) => color(d.weight_color))
+
     .attr('orient', 'auto')
     .append('path')
 
@@ -110,19 +171,28 @@ export function topoGraph({
     .data(links)
     .join('path')
     .attr('class', 'lines')
-    .style('stroke', 'red')
-    .attr('opacity', (d) => d.weight / 10000 + 0.25)
-    .attr('stroke-width', 2)
+    .attr('id', (d) => `Topo_line_${d.source.id}_${d.target.id}`)
+    .style('stroke', (d) => color(d.weight_color))
+    .attr('stroke-width', 3)
     .attr('fill', 'none')
-    .attr('marker-end', (d) => `url(${new URL(`#arrow-${1}`, location)})`);
+
+    .attr(
+      'marker-end',
+      (d) =>
+        `url(${new URL(
+          `#Topo_arrow_${d.source.id}_${d.target.id}`,
+          location,
+        )})`,
+    );
   const node = svg
     .selectAll('circle')
     .data(nodes)
     .join('circle')
-    .attr('id', (d) => `Topo_Node_${d.id}`)
+    .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
-    .style('fill', '#69b3a2')
-    .call(drag(simulation));
 
+    .style('fill', (d) => color(d.weight))
+    .call(drag(simulation));
+  console.log(nodes);
   return svg;
 }
