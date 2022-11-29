@@ -193,6 +193,5 @@ export function topoGraph({
 
     .style('fill', (d) => color(d.weight))
     .call(drag(simulation));
-  console.log(nodes);
   return svg;
 }
