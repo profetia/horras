@@ -34,6 +34,9 @@ export function naiveHeatmap(
       left: 30,
     },
     heatmapColor = d3.interpolateRdPu,
+    // d3.interpolateCubehelixLong('#f0f9e8', '#08306b')
+    // d3.interpolateHslLong(d3.hsl(0, 0, 0.5), d3.hsl(0, 0, 0.9))
+    // d3.interpolateLab('#ffffff', '#ff0000')
   },
   data,
 ) {
