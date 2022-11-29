@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import * as d3 from 'd3';
 import useChartState from '@/composables/charts/useChartState';
+import { doDebounce } from '@/composables/utils/useDebounce';
 
 const { setTimeRange } = useChartState();
 
@@ -115,7 +116,7 @@ export function brushedHeatmap(
     svg.node().focus();
   };
 
-  const brushmove = (event) => {
+  const brushmove = doDebounce((event) => {
     const selection = event.selection;
     if (!selection) {
       return;
@@ -144,7 +145,7 @@ export function brushedHeatmap(
         }
       }
     });
-  };
+  }, 50);
 
   const brushend = (event) => {
     const selection = event.selection;
