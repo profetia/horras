@@ -9,10 +9,7 @@ const hotspots = ref([]); // locations
 
 const highlights = ref([]); // counties
 
-const loading = reactive({
-  geometry: false,
-  topology: false,
-});
+const fetchStatus = ref(false);
 
 const setTimeRange = (dateRange, clockRange) => {
   timeRange.clockRange = clockRange;
@@ -28,7 +25,9 @@ const setHighlights = (data) => {
 };
 
 const appendHighlights = (data) => {
-  highlights.value.push(...data);
+  if (!highlights.value.includes(data)) {
+    highlights.value.push(data);
+  }
 };
 
 export default () => {
@@ -36,7 +35,7 @@ export default () => {
     timeRange,
     hotspots,
     highlights,
-    loading,
+    fetchStatus,
 
     setTimeRange,
     setHotspots,

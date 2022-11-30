@@ -1,10 +1,8 @@
 <script setup>
-import * as d3 from 'd3';
 import { d3RefNode } from '@/composables/d3/core/dreactive';
 import D3Wrapper from '@/components/d3/core/D3Wrapper.vue';
 
 import { topoGraph } from '@/composables/d3/charts/topology';
-import { onMounted, watch } from 'vue';
 import useTopoGraph from '@/composables/charts/useTopoGraph';
 
 const props = defineProps({
@@ -14,16 +12,16 @@ const props = defineProps({
   },
   height: {
     type: [String, Number],
-    default: 450,
+    default: 588,
   },
   margin: {
     type: Object,
-    default: {
+    default: () => ({
       top: 20,
       right: 30,
       left: 30,
       bottom: 40,
-    },
+    }),
   },
 });
 

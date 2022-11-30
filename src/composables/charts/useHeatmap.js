@@ -4,7 +4,7 @@ import { doGet, doPost } from '@/composables/utils/useFetching';
 import useChartState from '@/composables/charts/useChartState';
 
 const { showSnackbar } = useSnackbar();
-const { timeRange, loading, setHotspots } = useChartState();
+const { timeRange, fetchStatus, setHotspots } = useChartState();
 
 const fetchHeatmapData = async () => {
   let data = [];
@@ -13,6 +13,7 @@ const fetchHeatmapData = async () => {
     (response) => {
       data = response.data;
     },
+    // eslint-disable-next-line no-unused-vars
     (_erorr) => {
       showSnackbar('Error fetching heatmap data', 'error');
     },
@@ -28,7 +29,9 @@ const fetchHotspots = async () => {
     'geometry',
     (response) => {
       data = response.data;
+      fetchStatus.value = false;
     },
+    // eslint-disable-next-line no-unused-vars
     (_erorr) => {
       showSnackbar('Error fetching hotspots data', 'error');
       // console.log(_erorr);
@@ -52,7 +55,7 @@ const processHeatmap = async () => {
   // console.log(data);
   data = data[0].map((_, colIndex) => data.map((row) => row[colIndex]));
   data = data.map((row) => row.map((value) => scaleFunction(value)));
-  console.log(data);
+  // console.log(data);
   // console.log(data);
   // console.log(data.length);
   heatmapData.value = data;
@@ -63,8 +66,9 @@ export default () => {
 
   watch(
     timeRange,
-    async (value, oldValue) => {
-      loading.geometry = true;
+    // eslint-disable-next-line no-unused-vars
+    async (_value, _oldValue) => {
+      fetchStatus.value = true;
       const hotspots = await fetchHotspots();
       setHotspots(hotspots);
     },

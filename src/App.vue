@@ -3,8 +3,11 @@ import Heatmap from '@/components/charts/Heatmap.vue';
 import Geometry from '@/components/charts/Geometry.vue';
 import TopoGraph from '@/components/charts/TopoGraph.vue';
 import useSnackbar from '@/composables/global/useSnackbar';
+import useChartState from '@/composables/charts/useChartState';
 
 const { snackbar } = useSnackbar();
+
+const { fetchStatus } = useChartState();
 </script>
 <template>
   <v-app>
@@ -37,6 +40,13 @@ const { snackbar } = useSnackbar();
           </div>
         </div>
       </div>
+      <v-overlay :model-value="fetchStatus" class="align-center justify-center">
+        <v-progress-circular
+          indeterminate
+          size="64"
+          color="primary"
+        ></v-progress-circular>
+      </v-overlay>
       <v-snackbar
         v-model="snackbar.show"
         :color="snackbar.color"

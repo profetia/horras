@@ -9,7 +9,7 @@ import useChartState from '@/composables/charts/useChartState';
 import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
 
 const { geometry, chartConfig } = useGeometry();
-const { appendHighlights, loading } = useChartState();
+const { appendHighlights } = useChartState();
 
 const initFn = (node, { geometry, chartConfig }) => {
   const baseLayer = L.tileLayer(...tileOpenStreetNormal);
