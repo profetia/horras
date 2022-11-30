@@ -12,31 +12,40 @@ const { fetchStatus } = useChartState();
 <template>
   <v-app>
     <v-main>
-      <v-toolbar
-        title="Haikou Online Ride-hailing Records Analysis System"
-        elevation="3"
-      ></v-toolbar>
-      <div class="pt-16">
-        <div class="mx-4">
+      <div class="d-flex justify-center py-8">
+        <div>
           <div class="d-flex justify-center">
-            <div>
-              <div class="pb-16">
-                <div
-                  class="d-flex justify-space-between"
-                  style="margin-left: 50px; margin-right: 20px"
-                >
-                  <div>
-                    <Geometry />
-                  </div>
-                  <div>
-                    <TopoGraph />
-                  </div>
-                </div>
-              </div>
+            <div class="text-h2">HORRAS</div>
+          </div>
+          <div>
+            <div>Haikou Online Ride-hailing Records Analysis System</div>
+          </div>
+        </div>
+      </div>
+      <v-divider></v-divider>
+      <div class="py-16">
+        <div class="d-flex justify-center">
+          <div style="width: 1700px">
+            <div
+              class="d-flex justify-space-between"
+              style="margin-left: 48px; margin-right: 20px"
+            >
               <div>
-                <Heatmap />
+                <Geometry />
+              </div>
+              <v-divider vertical></v-divider>
+              <div>
+                <TopoGraph />
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <v-divider></v-divider>
+      <div class="pt-16">
+        <div class="d-flex justify-center">
+          <div>
+            <Heatmap />
           </div>
         </div>
       </div>

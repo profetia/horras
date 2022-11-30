@@ -54,7 +54,7 @@ const initFn = (node, { geometry, chartConfig }) => {
 };
 </script>
 <template>
-  <v-card>
+  <v-card variant="flat">
     <div>
       <LeafletWrapper
         :callback="initFn"

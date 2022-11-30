@@ -4,6 +4,7 @@ import D3Wrapper from '@/components/d3/core/D3Wrapper.vue';
 
 import { topoGraph } from '@/composables/d3/charts/topology';
 import useTopoGraph from '@/composables/charts/useTopoGraph';
+import { toValidLength } from '@/composables/leaflet/utils/layout';
 
 const props = defineProps({
   width: {
@@ -37,5 +38,11 @@ const chart = d3RefNode(() => {
 });
 </script>
 <template>
-  <D3Wrapper :node="chart" />
+  <v-card variant="outlined">
+    <div
+      :style="{ width: toValidLength(width), height: toValidLength(height) }"
+    >
+      <D3Wrapper :node="chart" />
+    </div>
+  </v-card>
 </template>
