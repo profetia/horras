@@ -17,9 +17,9 @@ const fetchTopoGraphData = async () => {
 
   let data = {};
   await doPost(
-    'geometry',
+    'topology',
     (response) => {
-      data = response.data;
+      data.edges = response.data;
       fetchStatus.value = false;
     },
     // eslint-disable-next-line no-unused-vars

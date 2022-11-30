@@ -11,13 +11,27 @@ export function topoGraph({
     left: 30,
   },
 } = {}) {
-  if (!data.nodes || data.nodes.length === 0) {
+  console.log('data');
+  console.log(data);
+  if (!data || data.length === 0) {
     return d3.create('svg');
   }
+  let node_or = [];
+  data.edges.forEach((d) => {
+    console.log('k');
+    let x = d.x;
+    let y = d.y;
+    if (node_or.indexOf(x) == -1) {
+      node_or.push(d.x);
+    }
+    if (node_or.indexOf(y) == -1) {
+      node_or.push(d.y);
+    }
+  });
 
   // process data we obtained
   let nodes = [];
-  data.nodes.forEach((element) => {
+  node_or.forEach((element) => {
     nodes.push({
       id: element,
       in_number: d3.sum(data.edges, (d) => {
@@ -42,6 +56,8 @@ export function topoGraph({
   nodes.forEach((d) => {
     d.sum_number = d.in_number + d.out_number;
   });
+  console.log('node');
+  console.log(nodes);
 
   let node_weight_scale = d3
     .scaleLinear()
@@ -56,12 +72,13 @@ export function topoGraph({
       console.log('error on data for Topo');
       continue;
     }
-    let weight = data.edges[i].xy_num - data.edges[i].yx_num;
+
     /*    links.push({
       source: weight ? data.edges[i].x : data.edges[i].y,
       target: weight ? data.edges[i].y : data.edges[i].x,
       weight: Math.abs(weight),
     }); */ //work for linkLine
+
     links.push({
       source: data.edges[i].x,
       target: data.edges[i].y,
@@ -73,8 +90,11 @@ export function topoGraph({
       target: data.edges[i].x,
       weight: data.edges[i].yx_num,
     });
+
     // work for linkArc
   }
+  console.log('edge');
+  console.log(links);
 
   let color = (d) => d3.interpolateRdYlGn(d);
   let color_scale = d3
@@ -113,8 +133,8 @@ export function topoGraph({
       'link',
       d3.forceLink(links).id((d) => d.id),
     )
-    .force('charge', d3.forceManyBody().strength(-30))
-    .force('center', d3.forceCenter(width / 2, height / 2).strength(0.7));
+    .force('charge', d3.forceManyBody().strength(-400))
+    .force('center', d3.forceCenter(width / 2, height / 2).strength(0.1));
   simulation.on('tick', () => {
     link.attr('d', linkArc);
     node.attr('transform', (d) => `translate(${d.x},${d.y})`);
@@ -170,12 +190,16 @@ export function topoGraph({
     .selectAll('.lines')
     .data(links)
     .join('path')
-    .attr('class', 'lines')
+    .attr(
+      'class',
+      (d) =>
+        `lines Topo_line_target_${d.target.id} Topo_line_source_${d.source.id}`,
+    )
     .attr('id', (d) => `Topo_line_${d.source.id}_${d.target.id}`)
     .style('stroke', (d) => color(d.weight_color))
     .attr('stroke-width', 3)
     .attr('fill', 'none')
-
+    .attr('isCalled', 'false')
     .attr(
       'marker-end',
       (d) =>
@@ -188,10 +212,38 @@ export function topoGraph({
     .selectAll('circle')
     .data(nodes)
     .join('circle')
+    .attr('class', 'nodes')
     .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
-
     .style('fill', (d) => color(d.weight))
-    .call(drag(simulation));
+    .attr('isCalled', 'false')
+    .call(drag(simulation))
+    .on('click', (d) => {
+      console.log(
+        d3
+          .selectAll(`.Topo_line_target_${d.target.__data__.id}`)
+          .attr('isCalled'),
+      );
+      if (
+        d3.selectAll(`#Topo_node_${d.target.__data__.id}`).attr('isCalled') ==
+        'true'
+      ) {
+        d3.selectAll('.nodes').attr('opacity', '1').attr('isCalled', 'false');
+        d3.selectAll('.lines').attr('opacity', '1').attr('isCalled', 'false');
+      } else {
+        d3.selectAll('.nodes').attr('opacity', '0.1').attr('isCalled', 'false');
+        d3.selectAll('.lines').attr('opacity', '0.1').attr('isCalled', 'false');
+        d3.selectAll(`#Topo_node_${d.target.__data__.id}`)
+          .attr('opacity', '1')
+          .attr('isCalled', 'true');
+        d3.selectAll(`.Topo_line_target_${d.target.__data__.id}`)
+          .attr('opacity', '1')
+          .attr('isCalled', 'false');
+        d3.selectAll(`.Topo_line_source_${d.target.__data__.id}`)
+          .attr('opacity', '1')
+          .attr('isCalled', 'false');
+      }
+    });
+
   return svg;
 }
