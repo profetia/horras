@@ -7,7 +7,10 @@ const timeRange = reactive({
 
 const hotspots = ref([]); // locations
 const highlights = ref([]); // counties
-const selected = ref(0);
+const selected = reactive({
+  id: 0,
+  color: '#666',
+});
 
 const fetchStatus = ref(false);
 

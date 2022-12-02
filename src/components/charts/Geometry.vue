@@ -17,6 +17,13 @@ const countyLayer = polygon({
   // map: haikouMap,
   color: 'grey',
   eventHandlers: {
+    mouseout: (e) => {
+      if (e.target.feature.properties.adcode == selected.id) {
+        matchSelected(selected.id, selected.color);
+      } else {
+        countyLayer.resetStyle(e.target);
+      }
+    },
     click: (e) => {
       // haikouMap.fitBounds(e.target.getBounds());
       const adcode = e.target.feature.properties.adcode;
@@ -25,14 +32,14 @@ const countyLayer = polygon({
   },
 });
 
-function matchSelected(value) {
+function matchSelected(adcode, color) {
   for (let index in countyLayer._layers) {
     let layer = countyLayer._layers[index];
     // console.log(layer.feature.properties.adcode, value);
-    if (layer.feature.properties.adcode == value) {
+    if (layer.feature.properties.adcode == adcode) {
       layer.setStyle({
         weight: 5,
-        color: '#666',
+        color: color,
         dashArray: '',
         fillOpacity: 0.7,
       });
@@ -44,7 +51,7 @@ function matchSelected(value) {
 }
 
 watch(selected, (value) => {
-  matchSelected(value);
+  matchSelected(value.id, value.color);
 });
 
 const initFn = (node, { geometry, chartConfig }) => {
@@ -75,7 +82,7 @@ const initFn = (node, { geometry, chartConfig }) => {
 
   countyLayer.addTo(haikouMap);
 
-  matchSelected(selected.value);
+  matchSelected(selected.id, selected.color);
 };
 </script>
 <template>

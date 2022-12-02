@@ -2,6 +2,7 @@ import GeoJson460105 from '@/assets/geojson/460105.json';
 import GeoJson460106 from '@/assets/geojson/460106.json';
 import GeoJson460107 from '@/assets/geojson/460107.json';
 import GeoJson460108 from '@/assets/geojson/460108.json';
+import * as d3 from 'd3';
 
 const registry = {
   460105: GeoJson460105,
@@ -21,6 +22,8 @@ function formatToTwoDigits(num) {
         ...feature.properties,
         adcode: `${key}${formatToTwoDigits(index)}`,
       };
+      feature.properties.color =
+        d3.schemeCategory10[feature.properties.adcode % 10];
     });
   }
 })();
@@ -41,7 +44,8 @@ export function getHaikouByRegion(region) {
 }
 
 export function getHaikouByCode(code) {
+  code = new String(code);
   const regionID = code.substring(0, 6);
   const polygonID = code.substring(6);
-  return registry[regionID].features[polygonID];
+  return registry[regionID].features[new Number(polygonID)];
 }

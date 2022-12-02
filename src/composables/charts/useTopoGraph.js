@@ -3,6 +3,7 @@ import { doPost } from '@/composables/utils/useFetching';
 import useChartState from '@/composables/charts/useChartState';
 import useSnackbar from '@/composables/global/useSnackbar';
 import { doDebounce } from '@/composables/utils/useDebounce';
+import { recordWatch } from '@/composables/utils/useWatch';
 
 const { highlights, timeRange, fetchStatus } = useChartState();
 const { showSnackbar } = useSnackbar();
@@ -12,6 +13,8 @@ const topoGraphData = ref({
   edges: [],
 });
 
+const actualShow = ref([]);
+
 const fetchTopoGraphData = async () => {
   const dateLowerBound = 119;
 
@@ -19,7 +22,7 @@ const fetchTopoGraphData = async () => {
   await doPost(
     'topology',
     (response) => {
-      data.edges = response.data;
+      data = response.data;
       fetchStatus.value = false;
     },
     // eslint-disable-next-line no-unused-vars
@@ -41,10 +44,19 @@ const processTopoGraphData = async () => {
   topoGraphData.value = data;
 };
 
-watch(
+recordWatch(
   highlights,
-  doDebounce(() => {
+  doDebounce((oldValue, value) => {
+    // console.log(value, oldValue._value);
+    if (value.length < oldValue._value.length) {
+      return;
+    }
     processTopoGraphData();
+    for (let county of highlights.value) {
+      if (!actualShow.value.includes(county)) {
+        actualShow.value.push(county);
+      }
+    }
   }),
   {
     deep: true,
@@ -63,5 +75,6 @@ export default () => {
 
   return {
     topoGraphData,
+    actualShow,
   };
 };

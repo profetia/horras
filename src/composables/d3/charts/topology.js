@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { getHaikouByCode } from '@/composables/utils/useHaikou';
 
 export function topoGraph({
   data,
@@ -231,7 +232,7 @@ export function topoGraph({
     .attr('class', 'nodes')
     .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
-    .style('fill', (d) => d3.schemeCategory10[d.id % 10])
+    .style('fill', (d) => getHaikouByCode(d.id).properties.color)
     .attr('stroke-width', 2)
     .attr('stroke', '#666')
     .attr('isCalled', 'false')
@@ -261,7 +262,7 @@ export function topoGraph({
         selectCallback(...arguments);
         d3.selectAll('.nodes').attr('opacity', '0.1').attr('isCalled', 'false');
         d3.selectAll('.lines').attr('opacity', '0.1').attr('isCalled', 'false');
-        console.log(d.target.__data__);
+        // console.log(d.target.__data__);
         d.target.__data__.neigebour.forEach((d) => {
           d3.selectAll(`#Topo_node_${d}`)
             .attr('opacity', '1')
@@ -270,7 +271,6 @@ export function topoGraph({
             .attr('stroke-width', 2);
         });
         d3.selectAll(`#Topo_node_${d.target.__data__.id}`)
-
           .attr('r', 8)
           .attr('stroke', 'white')
           .attr('stroke-width', 3)
