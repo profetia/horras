@@ -49,7 +49,11 @@ const { fetchStatus } = useChartState();
           </div>
         </div>
       </div>
-      <v-overlay :model-value="fetchStatus" class="align-center justify-center">
+      <v-overlay
+        :model-value="fetchStatus"
+        class="align-center justify-center"
+        persistent
+      >
         <v-progress-circular
           indeterminate
           size="64"

@@ -231,23 +231,32 @@ export function topoGraph({
       // );
 
       if (
-        d3.selectAll(`#Topo_node_${d.target.__data__.id}`).attr('isCalled') ==
+        svg.selectAll(`#Topo_node_${d.target.__data__.id}`).attr('isCalled') ==
         'true'
       ) {
         unselectCallback(...arguments);
-        d3.selectAll('.nodes').attr('opacity', '1').attr('isCalled', 'false');
-        d3.selectAll('.lines').attr('opacity', '1').attr('isCalled', 'false');
+        svg.selectAll('.nodes').attr('opacity', '1').attr('isCalled', 'false');
+        svg.selectAll('.lines').attr('opacity', '1').attr('isCalled', 'false');
       } else {
         selectCallback(...arguments);
-        d3.selectAll('.nodes').attr('opacity', '0.1').attr('isCalled', 'false');
-        d3.selectAll('.lines').attr('opacity', '0.1').attr('isCalled', 'false');
-        d3.selectAll(`#Topo_node_${d.target.__data__.id}`)
+        svg
+          .selectAll('.nodes')
+          .attr('opacity', '0.1')
+          .attr('isCalled', 'false');
+        svg
+          .selectAll('.lines')
+          .attr('opacity', '0.1')
+          .attr('isCalled', 'false');
+        svg
+          .selectAll(`#Topo_node_${d.target.__data__.id}`)
           .attr('opacity', '1')
           .attr('isCalled', 'true');
-        d3.selectAll(`.Topo_line_target_${d.target.__data__.id}`)
+        svg
+          .selectAll(`.Topo_line_target_${d.target.__data__.id}`)
           .attr('opacity', '1')
           .attr('isCalled', 'false');
-        d3.selectAll(`.Topo_line_source_${d.target.__data__.id}`)
+        svg
+          .selectAll(`.Topo_line_source_${d.target.__data__.id}`)
           .attr('opacity', '1')
           .attr('isCalled', 'false');
       }

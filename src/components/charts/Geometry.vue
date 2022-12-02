@@ -25,7 +25,7 @@ const countyLayer = polygon({
   },
 });
 
-watch(selected, (value) => {
+function matchSelected(value) {
   for (let index in countyLayer._layers) {
     let layer = countyLayer._layers[index];
     // console.log(layer.feature.properties.adcode, value);
@@ -41,6 +41,10 @@ watch(selected, (value) => {
       countyLayer.resetStyle(layer);
     }
   }
+}
+
+watch(selected, (value) => {
+  matchSelected(value);
 });
 
 const initFn = (node, { geometry, chartConfig }) => {
@@ -70,6 +74,8 @@ const initFn = (node, { geometry, chartConfig }) => {
   });
 
   countyLayer.addTo(haikouMap);
+
+  matchSelected(selected.value);
 };
 </script>
 <template>

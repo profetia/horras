@@ -51,6 +51,13 @@ watch(
   },
 );
 
+// eslint-disable-next-line no-unused-vars
+watch(timeRange, (_value) => {
+  if (highlights.value.length > 0) {
+    processTopoGraphData();
+  }
+});
+
 export default () => {
   // processTopoGraphData();
 
