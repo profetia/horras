@@ -69,9 +69,10 @@ export function naiveHeatmap(
     .attr('transform', (d, i) => {
       return `translate(0,${y(1) + (y(2) - y(1)) * i})`;
     })
-    .selectAll('rect')
+    .selectAll('.naives')
     .data((d) => d)
     .join('rect')
+    .attr('class', 'naives')
     .attr('isCell', true)
     .attr('x', (d, i) => {
       return x(1) + (x(2) - x(1)) * i;
@@ -122,11 +123,13 @@ export function brushedHeatmap(
   const brushmove = doDebounce((event) => {
     const selection = event.selection;
     if (!selection) {
+      svg.selectAll('.naives').attr('opacity', '1');
       return;
     }
     const [[x0, y0], [x1, y1]] = selection;
-    svg.selectAll('rect').each((d, i, g) => {
+    svg.selectAll('.naives').each((d, i, g) => {
       const node = d3.select(g[i]);
+      node.attr('opacity', '0.5');
       if (!node.attr('isCell')) {
         return;
       }
@@ -140,10 +143,12 @@ export function brushedHeatmap(
         currentY <= y1
       ) {
         isSelected[`${currentX},${currentY}`] = true;
-        node.attr('filter', 'brightness(50%)');
+        node.attr('opacity', '1');
+        // node.attr('filter', 'brightness(50%)');
       } else {
         if (isSelected[`${currentX},${currentY}`]) {
-          node.attr('filter', 'brightness(100%)');
+          node.attr('opacity', '0.5');
+          //node.attr('filter', 'brightness(100%)');
           isSelected[`${currentX},${currentY}`] = false;
         }
       }
@@ -153,6 +158,7 @@ export function brushedHeatmap(
   const brushend = (event) => {
     const selection = event.selection;
     if (!selection) {
+      svg.selectAll('.naives').attr('opacity', '1');
       return;
     }
     const [[x0, y0], [x1, y1]] = selection;
