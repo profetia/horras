@@ -52,6 +52,7 @@ export function topoGraph({
           return d.yx_num;
         }
       }),
+      neigebour: [element],
       group: null, //provided by clustering
     });
   });
@@ -80,7 +81,16 @@ export function topoGraph({
       target: weight ? data.edges[i].y : data.edges[i].x,
       weight: Math.abs(weight),
     }); */ //work for linkLine
-
+    nodes[
+      nodes.findIndex(function (item, index, arr) {
+        return item.id == data.edges[i].x;
+      })
+    ].neigebour.push(data.edges[i].y);
+    nodes[
+      nodes.findIndex(function (item, index, arr) {
+        return item.id == data.edges[i].y;
+      })
+    ].neigebour.push(data.edges[i].x);
     links.push({
       source: data.edges[i].x,
       target: data.edges[i].y,
@@ -140,6 +150,9 @@ export function topoGraph({
   simulation.on('tick', () => {
     link.attr('d', linkArc);
     node.attr('transform', (d) => `translate(${d.x},${d.y})`);
+    if (simulation.alpha() <= 0.05) {
+      simulation.stop();
+    }
   });
   // .on('end', ticked);
 
@@ -218,7 +231,7 @@ export function topoGraph({
     .attr('class', 'nodes')
     .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
-    .style('fill', (d) => color(d.weight))
+    .style('fill', (d) => d3.schemeCategory10[d.id % 10])
     .attr('stroke-width', 2)
     .attr('stroke', '#666')
     .attr('isCalled', 'false')
@@ -235,28 +248,37 @@ export function topoGraph({
         'true'
       ) {
         unselectCallback(...arguments);
-        svg.selectAll('.nodes').attr('opacity', '1').attr('isCalled', 'false');
+        svg
+          .selectAll('.nodes')
+          .attr('opacity', '1')
+          .attr('isCalled', 'false')
+          .attr('opacity', '1')
+          .attr('r', 5)
+          .attr('stroke', '#666')
+          .attr('stroke-width', 2);
         svg.selectAll('.lines').attr('opacity', '1').attr('isCalled', 'false');
       } else {
         selectCallback(...arguments);
-        svg
-          .selectAll('.nodes')
-          .attr('opacity', '0.1')
-          .attr('isCalled', 'false');
-        svg
-          .selectAll('.lines')
-          .attr('opacity', '0.1')
-          .attr('isCalled', 'false');
-        svg
-          .selectAll(`#Topo_node_${d.target.__data__.id}`)
-          .attr('opacity', '1')
+        d3.selectAll('.nodes').attr('opacity', '0.1').attr('isCalled', 'false');
+        d3.selectAll('.lines').attr('opacity', '0.1').attr('isCalled', 'false');
+        console.log(d.target.__data__);
+        d.target.__data__.neigebour.forEach((d) => {
+          d3.selectAll(`#Topo_node_${d}`)
+            .attr('opacity', '1')
+            .attr('r', 5)
+            .attr('stroke', '#666')
+            .attr('stroke-width', 2);
+        });
+        d3.selectAll(`#Topo_node_${d.target.__data__.id}`)
+
+          .attr('r', 8)
+          .attr('stroke', 'white')
+          .attr('stroke-width', 3)
           .attr('isCalled', 'true');
-        svg
-          .selectAll(`.Topo_line_target_${d.target.__data__.id}`)
+        d3.selectAll(`.Topo_line_target_${d.target.__data__.id}`)
           .attr('opacity', '1')
           .attr('isCalled', 'false');
-        svg
-          .selectAll(`.Topo_line_source_${d.target.__data__.id}`)
+        d3.selectAll(`.Topo_line_source_${d.target.__data__.id}`)
           .attr('opacity', '1')
           .attr('isCalled', 'false');
       }
