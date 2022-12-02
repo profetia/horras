@@ -6,8 +6,8 @@ const timeRange = reactive({
 });
 
 const hotspots = ref([]); // locations
-
 const highlights = ref([]); // counties
+const selected = ref(0);
 
 const fetchStatus = ref(false);
 
@@ -36,6 +36,7 @@ export default () => {
     hotspots,
     highlights,
     fetchStatus,
+    selected,
 
     setTimeRange,
     setHotspots,

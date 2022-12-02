@@ -4,6 +4,7 @@ import D3Wrapper from '@/components/d3/core/D3Wrapper.vue';
 
 import { topoGraph } from '@/composables/d3/charts/topology';
 import useTopoGraph from '@/composables/charts/useTopoGraph';
+import useChartState from '@/composables/charts/useChartState';
 import { toValidLength } from '@/composables/leaflet/utils/layout';
 
 const props = defineProps({
@@ -27,11 +28,19 @@ const props = defineProps({
 });
 
 const { topoGraphData } = useTopoGraph(props);
+const { selected } = useChartState();
 
 const chart = d3RefNode(() => {
   let scatter = topoGraph({
     ...props,
     data: topoGraphData.value,
+    selectCallback: (event, d) => {
+      const adcode = d.id;
+      selected.value = adcode;
+    },
+    unselectCallback: (event, d) => {
+      selected.value = 0;
+    },
   });
 
   return scatter.node();

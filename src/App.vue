@@ -12,7 +12,7 @@ const { fetchStatus } = useChartState();
 <template>
   <v-app>
     <v-main>
-      <div class="d-flex justify-center py-8">
+      <div class="d-flex justify-center pt-4">
         <div>
           <div class="d-flex justify-center">
             <div class="text-h2">HORRAS</div>
@@ -23,7 +23,7 @@ const { fetchStatus } = useChartState();
         </div>
       </div>
       <v-divider></v-divider>
-      <div class="py-16">
+      <div class="py-2">
         <div class="d-flex justify-center">
           <div style="width: 1700px">
             <div
@@ -42,7 +42,7 @@ const { fetchStatus } = useChartState();
         </div>
       </div>
       <v-divider></v-divider>
-      <div class="pt-16">
+      <div>
         <div class="d-flex justify-center">
           <div>
             <Heatmap />

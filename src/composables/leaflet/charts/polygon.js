@@ -20,6 +20,7 @@ export function polygon({
       dashArray,
     }),
     onEachFeature: (feature, layer) => {
+      // console.log(feature, layer);
       layer.on({
         mouseover: (e) => {
           const layer = e.target;
@@ -38,5 +39,6 @@ export function polygon({
       });
     },
   });
+  // console.log(polygonLayer);
   return polygonLayer;
 }

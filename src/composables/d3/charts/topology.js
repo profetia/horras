@@ -10,15 +10,17 @@ export function topoGraph({
     bottom: 40,
     left: 30,
   },
+  selectCallback = () => {},
+  unselectCallback = () => {},
 } = {}) {
-  console.log('data');
-  console.log(data);
+  // console.log('data');
+  // console.log(data);
   if (!data || data.length === 0) {
     return d3.create('svg');
   }
   let node_or = [];
   data.edges.forEach((d) => {
-    console.log('k');
+    // console.log('k');
     let x = d.x;
     let y = d.y;
     if (node_or.indexOf(x) == -1) {
@@ -56,8 +58,8 @@ export function topoGraph({
   nodes.forEach((d) => {
     d.sum_number = d.in_number + d.out_number;
   });
-  console.log('node');
-  console.log(nodes);
+  // console.log('node');
+  // console.log(nodes);
 
   let node_weight_scale = d3
     .scaleLinear()
@@ -69,7 +71,7 @@ export function topoGraph({
   let links = [];
   for (let i = 0; i < data.edges.length; i++) {
     if (data.edges[i].x == data.edges[i].y) {
-      console.log('error on data for Topo');
+      // console.log('error on data for Topo');
       continue;
     }
 
@@ -93,8 +95,8 @@ export function topoGraph({
 
     // work for linkArc
   }
-  console.log('edge');
-  console.log(links);
+  // console.log('edge');
+  // console.log(links);
 
   let color = (d) => d3.interpolateRdYlGn(d);
   let color_scale = d3
@@ -133,7 +135,7 @@ export function topoGraph({
       'link',
       d3.forceLink(links).id((d) => d.id),
     )
-    .force('charge', d3.forceManyBody().strength(-400))
+    .force('charge', d3.forceManyBody().strength(-1600))
     .force('center', d3.forceCenter(width / 2, height / 2).strength(0.1));
   simulation.on('tick', () => {
     link.attr('d', linkArc);
@@ -157,6 +159,7 @@ export function topoGraph({
       if (!event.active) simulation.alphaTarget(0.1);
       d.fx = null;
       d.fy = null;
+      // console.log(event, d);
     }
 
     return d3
@@ -216,21 +219,26 @@ export function topoGraph({
     .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
     .style('fill', (d) => color(d.weight))
+    .attr('stroke-width', 2)
+    .attr('stroke', '#666')
     .attr('isCalled', 'false')
     .call(drag(simulation))
-    .on('click', (d) => {
-      console.log(
-        d3
-          .selectAll(`.Topo_line_target_${d.target.__data__.id}`)
-          .attr('isCalled'),
-      );
+    .on('click', function (d) {
+      // console.log(
+      //   d3
+      //     .selectAll(`.Topo_line_target_${d.target.__data__.id}`)
+      //     .attr('isCalled'),
+      // );
+
       if (
         d3.selectAll(`#Topo_node_${d.target.__data__.id}`).attr('isCalled') ==
         'true'
       ) {
+        unselectCallback(...arguments);
         d3.selectAll('.nodes').attr('opacity', '1').attr('isCalled', 'false');
         d3.selectAll('.lines').attr('opacity', '1').attr('isCalled', 'false');
       } else {
+        selectCallback(...arguments);
         d3.selectAll('.nodes').attr('opacity', '0.1').attr('isCalled', 'false');
         d3.selectAll('.lines').attr('opacity', '0.1').attr('isCalled', 'false');
         d3.selectAll(`#Topo_node_${d.target.__data__.id}`)

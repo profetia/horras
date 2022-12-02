@@ -7,9 +7,41 @@ import { polygon } from '@/composables/leaflet/charts/polygon';
 import { getHaikouAll } from '@/composables/utils/useHaikou';
 import useChartState from '@/composables/charts/useChartState';
 import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
+import { watch } from 'vue';
 
 const { geometry, chartConfig } = useGeometry();
-const { appendHighlights } = useChartState();
+const { appendHighlights, selected } = useChartState();
+
+const countyLayer = polygon({
+  data: getHaikouAll(),
+  // map: haikouMap,
+  color: 'grey',
+  eventHandlers: {
+    click: (e) => {
+      // haikouMap.fitBounds(e.target.getBounds());
+      const adcode = e.target.feature.properties.adcode;
+      appendHighlights(adcode);
+    },
+  },
+});
+
+watch(selected, (value) => {
+  for (let index in countyLayer._layers) {
+    let layer = countyLayer._layers[index];
+    // console.log(layer.feature.properties.adcode, value);
+    if (layer.feature.properties.adcode == value) {
+      layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7,
+      });
+      layer.bringToFront();
+    } else {
+      countyLayer.resetStyle(layer);
+    }
+  }
+});
 
 const initFn = (node, { geometry, chartConfig }) => {
   const baseLayer = L.tileLayer(...tileOpenStreetNormal);
@@ -35,19 +67,6 @@ const initFn = (node, { geometry, chartConfig }) => {
     ],
     renderer: L.svg(),
     layers: [baseLayer, heatmapLayer],
-  });
-
-  const countyLayer = polygon({
-    data: getHaikouAll(),
-    map: haikouMap,
-    color: 'grey',
-    eventHandlers: {
-      click: (e) => {
-        // haikouMap.fitBounds(e.target.getBounds());
-        const adcode = e.target.feature.properties.adcode;
-        appendHighlights(adcode);
-      },
-    },
   });
 
   countyLayer.addTo(haikouMap);
