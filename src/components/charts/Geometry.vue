@@ -9,7 +9,7 @@ import useChartState from '@/composables/charts/useChartState';
 import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
 import { watch } from 'vue';
 
-const { geometry, chartConfig } = useGeometry();
+const { geometry, chartConfig, mapState } = useGeometry();
 const { appendHighlights, selected } = useChartState();
 
 const countyLayer = polygon({
@@ -68,8 +68,8 @@ const initFn = (node, { geometry, chartConfig }) => {
   const haikouMap = L.map(node, {
     zoomControl: false,
     attributionControl: false,
-    center: [20.004658, 110.355043],
-    zoom: 12,
+    center: mapState.center,
+    zoom: mapState.zoom,
     minZoom: 9,
     maxZoom: 15,
     maxBounds: [
@@ -78,6 +78,14 @@ const initFn = (node, { geometry, chartConfig }) => {
     ],
     renderer: L.svg(),
     layers: [baseLayer, heatmapLayer],
+  });
+
+  haikouMap.on('zoomend', () => {
+    mapState.zoom = haikouMap.getZoom();
+  });
+
+  haikouMap.on('moveend', () => {
+    mapState.center = haikouMap.getCenter();
   });
 
   countyLayer.addTo(haikouMap);

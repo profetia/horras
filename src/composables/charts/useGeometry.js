@@ -10,6 +10,11 @@ const chartConfig = reactive({
   layers: ['departures', 'arrivals'],
 });
 
+const mapState = reactive({
+  center: [20.004658, 110.355043],
+  zoom: 12,
+});
+
 const geometry = computed(() => {
   if (
     hotspots.value &&
@@ -51,5 +56,6 @@ export default () => {
   return {
     geometry,
     chartConfig,
+    mapState,
   };
 };
