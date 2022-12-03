@@ -84,30 +84,38 @@ export function naiveHeatmap(
     .attr('width', (d, i) => x(2) - x(1) - 1)
     .attr('height', (d, i) => y(2) - y(1) - 1)
     .attr('fill', (d) => color(d));
-
+  let draw_axis = () => {
+    let Month_day = [31, 30, 31, 31, 30, 31];
+    let month_day_sum = [0, 31, 61, 92, 123, 153];
+    svg
+      .append('g')
+      .attr('class', 'axis_month')
+      .selectAll('.months_axis')
+      .data(month_day_sum)
+      .join('text')
+      .attr('class', 'months_axis')
+      .attr('x', (d) => x(1) + (x(2) - x(1)) * d)
+      .attr('y', margin.top)
+      .text((d, i) => `${i + 5}`);
+  };
+  draw_axis();
   let draw_range = () => {
     let text = svg.append('g').attr('class', 'range');
     text
       .append('text')
       .attr('id', 'day_up')
-      .attr('x', margin.left / 2 + 10)
-      .attr('y', 40)
-      .text('2017/5/1')
-      .attr('text-anchor', 'middle');
-    text
-      .append('text')
-      .attr('id', 'day_low')
-      .attr('x', margin.left / 2 + 10)
-      .attr('y', 60)
-      .text('-2017/10/31')
-      .attr('text-anchor', 'middle');
+      .attr('x', width / 2 - 5)
+      .attr('y', 15)
+      .text('2017/5/1-2017/10/31')
+      .attr('text-anchor', 'end');
+
     text
       .append('text')
       .attr('id', 'hour')
-      .attr('x', margin.left / 2 + 10)
-      .attr('y', 80)
+      .attr('x', width / 2 + 5)
+      .attr('y', 15)
       .text('0-24')
-      .attr('text-anchor', 'middle');
+      .attr('text-anchor', 'start');
   };
   draw_range();
   return svg;
@@ -184,9 +192,7 @@ export function brushedHeatmap(
   const brushend = (event) => {
     const selection = event.selection;
     if (!selection) {
-      svg.select('#day_up').text(`2017/5/1`);
-
-      svg.select('#day_low').text(`-2017/10/31`);
+      svg.select('#day_up').text(`2017/5/1-2017/10/31`);
       svg.select('#hour').text(`0-24`);
       svg.selectAll('.naives').attr('opacity', '1');
       return;
@@ -218,11 +224,10 @@ export function brushedHeatmap(
     });
     svg
       .select('#day_up')
-      .text(`2017/${xRange_time[0].month}/${xRange_time[0].day}`);
+      .text(
+        `2017/${xRange_time[0].month}/${xRange_time[0].day}-2017/${xRange_time[1].month}/${xRange_time[1].day}`,
+      );
 
-    svg
-      .select('#day_low')
-      .text(`-2017/${xRange_time[1].month}/${xRange_time[1].day}`);
     svg.select('#hour').text(`${yRange[0]}-${yRange[1] + 1}`);
     setTimeRange(xRange, yRange);
   };
