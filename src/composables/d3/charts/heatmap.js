@@ -97,6 +97,19 @@ export function naiveHeatmap(
       .attr('x', (d) => x(1) + (x(2) - x(1)) * d)
       .attr('y', margin.top)
       .text((d, i) => `${i + 5}`);
+    let hours = [0, 3, 6, 9, 12, 15, 18, 21, 24];
+    svg
+      .append('g')
+      .attr('class', 'axis_hours')
+      .selectAll('.hours_axis')
+      .data(hours)
+      .join('text')
+      .attr('class', 'hours_axis')
+      .attr('x', x(1))
+      .attr('text-anchor', 'end')
+      .attr('y', (d) => y(1) + (y(2) - y(1)) * d)
+      .text((d, i) => `${d}`)
+      .attr('font-size', 14);
   };
   draw_axis();
   let draw_range = () => {
