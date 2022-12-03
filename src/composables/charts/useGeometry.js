@@ -1,7 +1,10 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import useChartState from '@/composables/charts/useChartState';
+import { doPost } from '@/composables/utils/useFetching';
+import useSnackbar from '@/composables/global/useSnackbar';
 
-const { hotspots } = useChartState();
+const { hotspots, timeRange, setHotspots, fetchStatus } = useChartState();
+const { showSnackbar } = useSnackbar();
 
 const chartConfig = reactive({
   adoptive: false,
@@ -9,6 +12,8 @@ const chartConfig = reactive({
   height: 600,
   layers: ['departures', 'arrivals'],
 });
+
+const lowResSample = ref(true);
 
 const mapState = reactive({
   center: [20.004658, 110.355043],
@@ -40,8 +45,26 @@ const geometry = computed(() => {
     }));
     return {
       data,
-      min: Math.max(0, Math.min(...data.map((hotspot) => hotspot.count))),
-      max: Math.max(0, Math.max(...data.map((hotspot) => hotspot.count))),
+      min: Math.max(
+        0,
+        (() => {
+          let res = 0x7fffffff;
+          for (let i = 0; i < data.length; i += 1) {
+            res = Math.min(res, data[i].count);
+          }
+          return res;
+        })(),
+      ),
+      max: Math.max(
+        0,
+        (() => {
+          let res = 0;
+          for (let i = 0; i < data.length; i += 1) {
+            res = Math.max(res, data[i].count);
+          }
+          return res;
+        })(),
+      ),
     };
   } else {
     return {
@@ -52,8 +75,56 @@ const geometry = computed(() => {
   }
 });
 
+const fetchHotspots = async () => {
+  const dateLowerBound = 119;
+
+  let data = [];
+  await doPost(
+    'geometry',
+    (response) => {
+      data = response.data;
+      fetchStatus.value = false;
+    },
+    // eslint-disable-next-line no-unused-vars
+    (_erorr) => {
+      showSnackbar('Error fetching hotspots data', 'error');
+      fetchStatus.value = false;
+      // console.log(_erorr);
+    },
+  )({
+    sample: lowResSample.value,
+    date_range: timeRange.dateRange.map((value) => value + dateLowerBound),
+    clock_range: [
+      timeRange.clockRange[0] * 60,
+      (timeRange.clockRange[1] + 1) * 60,
+    ],
+  });
+  return data;
+};
+
+watch(
+  timeRange,
+  // eslint-disable-next-line no-unused-vars
+  async (_value, _oldValue) => {
+    fetchStatus.value = true;
+    const hotspots = await fetchHotspots();
+    setHotspots(hotspots);
+  },
+);
+
+// eslint-disable-next-line no-unused-vars
+watch(lowResSample, async (value) => {
+  fetchStatus.value = true;
+  const hotspots = await fetchHotspots();
+  if (!value) {
+    chartConfig.adoptive = true;
+  }
+  setHotspots(hotspots);
+});
+
 export default () => {
   return {
+    lowResSample,
     geometry,
     chartConfig,
     mapState,

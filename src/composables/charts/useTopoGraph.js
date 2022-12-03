@@ -28,12 +28,16 @@ const fetchTopoGraphData = async () => {
     // eslint-disable-next-line no-unused-vars
     (_erorr) => {
       showSnackbar('Error fetching hotspots data', 'error');
+      fetchStatus.value = false;
       // console.log(_erorr);
     },
   )({
     nodes: highlights.value,
     date_range: timeRange.dateRange.map((value) => value + dateLowerBound),
-    clock_range: timeRange.clockRange.map((value) => value * 60),
+    clock_range: [
+      timeRange.clockRange[0] * 60,
+      (timeRange.clockRange[1] + 1) * 60,
+    ],
   });
   return data;
 };

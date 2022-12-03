@@ -23,12 +23,28 @@ GET /heatmap
 an array with shape of 150x24
 
 ```javascript
-[ // The first dim indicate the date id
+{
+  "init_geometry": [
+    {
+      "id": 46010701, // int, unique id of node
+      // <geo_json_id><num_node_id>
+      // geo_json_id: 460107
+      // num_node_id: 01
+      // this means the node is the 01th node in geo_json 460107
+      "lng": 20.00
+      "lat": 110.11
+      "start_num": 234, // int
+      "dest_num": 567 // int
+    },
+    ...
+  ]
+  "heatmap": [ // The first dim indicate the date id
     [200, 0, 123, ..., 123], // the second dim indicate the clock id at that date
     [200, 0, 123, ..., 123],
     [200, 0, 123, ..., 123],
     ...
 ]
+}
 ```
 
 ### Geometry
@@ -41,6 +57,7 @@ Get the map view data.
 
 ```javascript
 {
+  "sample": true, // whether to sample the data
   "date_range": [1, 133], // 0 ~ 200
   "clock_range": [0, 21] // 0 ~ 23
 }

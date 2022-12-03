@@ -9,7 +9,7 @@ import useChartState from '@/composables/charts/useChartState';
 import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
 import { watch } from 'vue';
 
-const { geometry, chartConfig, mapState } = useGeometry();
+const { geometry, chartConfig, mapState, lowResSample } = useGeometry();
 const { appendHighlights, selected } = useChartState();
 
 const countyLayer = polygon({
@@ -117,6 +117,21 @@ const initFn = (node, { geometry, chartConfig }) => {
             hide-details
             v-model="chartConfig.adoptive"
             label="Adoptive Sample"
+            class="font-weight-bold"
+          ></v-checkbox>
+        </v-chip>
+        <v-chip
+          label
+          variant="elevated"
+          color="purple"
+          text-color="white"
+          style="z-index: 10000"
+          class="ml-3 mb-3 pl-1"
+        >
+          <v-checkbox
+            hide-details
+            v-model="lowResSample"
+            label="Low-Res Sample"
             class="font-weight-bold"
           ></v-checkbox>
         </v-chip>
