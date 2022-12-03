@@ -6,7 +6,7 @@ import { topoGraph } from '@/composables/d3/charts/topology';
 import useTopoGraph from '@/composables/charts/useTopoGraph';
 import useChartState from '@/composables/charts/useChartState';
 import { toValidLength } from '@/composables/leaflet/utils/layout';
-import { watch, ref } from 'vue';
+import { watch } from 'vue';
 import { getHaikouByCode } from '@/composables/utils/useHaikou';
 
 const props = defineProps({

@@ -115,8 +115,8 @@ const initFn = (node, { geometry, chartConfig }) => {
         >
           <v-checkbox
             hide-details
-            v-model="chartConfig.adoptive"
-            label="Adoptive Sample"
+            v-model="chartConfig.relative"
+            label="Relative Sample"
             class="font-weight-bold"
           ></v-checkbox>
         </v-chip>

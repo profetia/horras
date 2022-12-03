@@ -7,7 +7,7 @@ const { hotspots, timeRange, setHotspots, fetchStatus } = useChartState();
 const { showSnackbar } = useSnackbar();
 
 const chartConfig = reactive({
-  adoptive: false,
+  relative: false,
   width: 800,
   height: 600,
   layers: ['departures', 'arrivals'],
@@ -37,7 +37,7 @@ const geometry = computed(() => {
         if (chartConfig.layers.includes('arrivals')) {
           res += hotspot.dest_num;
         }
-        if (!chartConfig.adoptive) {
+        if (!chartConfig.relative) {
           res = Math.log(res);
         }
         return res;
@@ -117,7 +117,9 @@ watch(lowResSample, async (value) => {
   fetchStatus.value = true;
   const hotspots = await fetchHotspots();
   if (!value) {
-    chartConfig.adoptive = true;
+    chartConfig.relative = true;
+  } else {
+    chartConfig.relative = false;
   }
   setHotspots(hotspots);
 });
