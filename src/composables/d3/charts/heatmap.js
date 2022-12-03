@@ -85,6 +85,31 @@ export function naiveHeatmap(
     .attr('height', (d, i) => y(2) - y(1) - 1)
     .attr('fill', (d) => color(d));
 
+  let draw_range = () => {
+    let text = svg.append('g').attr('class', 'range');
+    text
+      .append('text')
+      .attr('id', 'day_up')
+      .attr('x', margin.left / 2 + 10)
+      .attr('y', 40)
+      .text('2017/5/1')
+      .attr('text-anchor', 'middle');
+    text
+      .append('text')
+      .attr('id', 'day_low')
+      .attr('x', margin.left / 2 + 10)
+      .attr('y', 60)
+      .text('-2017/10/31')
+      .attr('text-anchor', 'middle');
+    text
+      .append('text')
+      .attr('id', 'hour')
+      .attr('x', margin.left / 2 + 10)
+      .attr('y', 80)
+      .text('0-24')
+      .attr('text-anchor', 'middle');
+  };
+  draw_range();
   return svg;
 }
 
