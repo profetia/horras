@@ -78,6 +78,7 @@ export function differentialExtension(
       vertical: 0.75,
       horizontal: 0.5,
     },
+    fillOpacity = 0.8,
   },
   data,
 ) {
@@ -140,7 +141,8 @@ export function differentialExtension(
       .attr('width', x_minus)
       .attr('fill', (d, i) => {
         return color[data_day_slope[i] >= 0 ? 0 : 1];
-      });
+      })
+      .attr('fill-opacity', fillOpacity);
   })();
 
   // Vertical bar chart
@@ -173,7 +175,8 @@ export function differentialExtension(
       )
       .attr('fill', (d, i) => {
         return color[data_hour_slope[i] >= 0 ? 0 : 1];
-      });
+      })
+      .attr('fill-opacity', fillOpacity);
   })();
   return svg;
 }

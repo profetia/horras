@@ -59,6 +59,7 @@ const chart = d3RefNode(() => {
       });
     }),
   );
+  scatter.style('font-size', '12px');
   return scatter.node();
 });
 </script>

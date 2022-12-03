@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import useChartState from '@/composables/charts/useChartState';
 import { doDebounce } from '@/composables/utils/useDebounce';
 
-const { setTimeRange } = useChartState();
+const { setTimeRange, resetTimeRange } = useChartState();
 
 export function defineAxis({
   xType = d3.scaleLinear(),
@@ -108,8 +108,7 @@ export function naiveHeatmap(
       .attr('x', x(1))
       .attr('text-anchor', 'end')
       .attr('y', (d) => y(1) + (y(2) - y(1)) * d)
-      .text((d, i) => `${d}`)
-      .attr('font-size', 14);
+      .text((d, i) => `${d}`);
   };
   draw_axis();
   let draw_range = () => {
@@ -208,6 +207,7 @@ export function brushedHeatmap(
       svg.select('#day_up').text(`2017/5/1-2017/10/31`);
       svg.select('#hour').text(`0-24`);
       svg.selectAll('.naives').attr('opacity', '1');
+      resetTimeRange();
       return;
     }
     const [[x0, y0], [x1, y1]] = selection;
