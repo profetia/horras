@@ -122,8 +122,8 @@ export function topoGraph({
     .create('svg')
     .attr('viewBox', [0, 0, width, height])
     .attr('width', width)
-    .attr('height', height)
-    .style('background', '#C0C0C0');
+    .attr('height', height);
+  // .style('background', '#C0C0C0');
 
   svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 

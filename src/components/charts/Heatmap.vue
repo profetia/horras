@@ -13,15 +13,15 @@ const props = defineProps({
   },
   height: {
     type: [String, Number],
-    default: 250,
+    default: 350,
   },
   margin: {
     type: Object,
     default: () => ({
-      top: 20,
-      right: 30,
+      top: 10,
+      right: 100, //留白准备画折线图，不然纯看热力图。。。
       left: 30,
-      bottom: 40,
+      bottom: 140, //留白准备画折线图，不然纯看热力图。。。
     }),
   },
 });
