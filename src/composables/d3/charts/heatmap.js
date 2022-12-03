@@ -49,8 +49,8 @@ export function naiveHeatmap(
   );
 
   const { x, y } = defineAxis({
-    xDomain: [0, data.value[0].length],
-    yDomain: [0, data.value.length],
+    xDomain: [0, data.value[0].length + 2],
+    yDomain: [0, data.value.length + 2],
     ...arguments[0],
   });
 
@@ -1973,6 +1973,64 @@ export function naiveHeatmap(
       .attr('fill', (d) => color(d.weather_lower));
   };
   draw_weather_blocks();
+  let draw_num_lines = () => {
+    let data_hour = [];
+    let data_day = [];
+    data.value.forEach((d) => {
+      data_hour.push(d3.sum(d));
+    });
+    for (let i = 0; i < data.value[0].length; i++) {
+      data_day.push(0);
+      for (let j = 0; j < 24; j++) {
+        data_day[i] += data.value[j][i];
+      }
+    }
+    console.log(data_day);
+    console.log(data_hour);
+    let draw_day_num = () => {
+      let data_day_slope = [];
+      let color = ['red', 'green'];
+      data_day_slope.push(0);
+      for (let i = 1; i < data_day.length; i++) {
+        data_day_slope.push(data_day[i] - data_day[i - 1]);
+      }
+      let day_x_scale = d3
+        .scaleLinear()
+        .domain([0, data.value[0].length + 2])
+        .range([margin.left, width - margin.right]);
+      let x_minus = day_x_scale(1) - day_x_scale(0);
+      console.log(x_minus);
+      let day_y_scale_slope = d3
+        .scaleLinear()
+        .domain(d3.extent(data_day_slope))
+        .range([height, height - margin.bottom]);
+      let day_y_scale_day = d3
+        .scaleLinear()
+        .domain(d3.extent(data_day))
+        .range([height, height - margin.bottom]);
+      console.log(day_y_scale_slope);
+      svg
+        .append('g')
+        .selectAll('.day_num')
+        .data(data_day)
+        .join('rect')
+        .attr('class', 'day_num')
+        .attr('y', (d) => day_y_scale_day(d))
+        .attr('x', (d, i) => {
+          return x(1) + (x(2) - x(1)) * i;
+        })
+        .attr('height', (d) => day_y_scale_day(0) - day_y_scale_day(d))
+        .attr('width', x_minus)
+        .attr('fill', (d, i) => {
+          return color[data_day_slope[i] >= 0 ? 0 : 1];
+        });
+    };
+    draw_day_num();
+
+    let draw_hour_num = () => {};
+  };
+
+  draw_num_lines();
   return svg;
 }
 
