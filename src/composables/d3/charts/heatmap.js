@@ -84,52 +84,7 @@ export function naiveHeatmap(
     .attr('width', (d, i) => x(2) - x(1) - 1)
     .attr('height', (d, i) => y(2) - y(1) - 1)
     .attr('fill', (d) => color(d));
-  let draw_axis = () => {
-    let Month_day = [31, 30, 31, 31, 30, 31];
-    let month_day_sum = [0, 31, 61, 92, 123, 153];
-    svg
-      .append('g')
-      .attr('class', 'axis_month')
-      .selectAll('.months_axis')
-      .data(month_day_sum)
-      .join('text')
-      .attr('class', 'months_axis')
-      .attr('x', (d) => x(1) + (x(2) - x(1)) * d)
-      .attr('y', margin.top)
-      .text((d, i) => `${i + 5}`);
-    let hours = [0, 3, 6, 9, 12, 15, 18, 21, 24];
-    svg
-      .append('g')
-      .attr('class', 'axis_hours')
-      .selectAll('.hours_axis')
-      .data(hours)
-      .join('text')
-      .attr('class', 'hours_axis')
-      .attr('x', x(1))
-      .attr('text-anchor', 'end')
-      .attr('y', (d) => y(1) + (y(2) - y(1)) * d)
-      .text((d, i) => `${d}`);
-  };
-  draw_axis();
-  let draw_range = () => {
-    let text = svg.append('g').attr('class', 'range');
-    text
-      .append('text')
-      .attr('id', 'day_up')
-      .attr('x', width / 2 - 5)
-      .attr('y', 15)
-      .text('2017/5/1-2017/10/31')
-      .attr('text-anchor', 'end');
 
-    text
-      .append('text')
-      .attr('id', 'hour')
-      .attr('x', width / 2 + 5)
-      .attr('y', 15)
-      .text('0-24')
-      .attr('text-anchor', 'start');
-  };
-  draw_range();
   return svg;
 }
 

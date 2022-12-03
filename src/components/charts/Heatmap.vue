@@ -7,6 +7,8 @@ import { brushedHeatmap } from '@/composables/d3/charts/heatmap';
 import {
   weatherExtension,
   differentialExtension,
+  axisExtension,
+  datetimeExtension,
 } from '@/composables/d3/charts/extension';
 import useHeatmap from '@/composables/charts/useHeatmap';
 import useChartState from '@/composables/charts/useChartState';
@@ -24,9 +26,9 @@ const props = defineProps({
     type: Object,
     default: () => ({
       top: 35,
-      right: 100, //留白准备画折线图，不然纯看热力图。。。
+      right: 100,
       left: 70,
-      bottom: 140, //留白准备画折线图，不然纯看热力图。。。
+      bottom: 140,
     }),
   },
 });
@@ -36,6 +38,8 @@ const { timeRange } = useChartState();
 
 const rawChart = d3RefNode(() => {
   let scatter = brushedHeatmap(props, heatmapData.value);
+  scatter = axisExtension({ svg: scatter, ...props }, heatmapData.value);
+  scatter = datetimeExtension({ svg: scatter, ...props });
   scatter = weatherExtension({ svg: scatter, ...props }, heatmapData.value);
   return scatter.node();
 });

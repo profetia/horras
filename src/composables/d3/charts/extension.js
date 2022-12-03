@@ -1,12 +1,16 @@
 import { weatherHaikou, weatherTypes } from '@/composables/utils/useWeather';
 import * as d3 from 'd3';
 import { defineAxis } from '@/composables/d3/charts/heatmap';
+import { daysOfMonths, ticksOfDay } from '@/composables/utils/useDatetime';
 
 export function weatherExtension(
   {
     svg = d3.create('svg'),
+    // eslint-disable-next-line no-unused-vars
     width = 400,
+    // eslint-disable-next-line no-unused-vars
     height = 900,
+    // eslint-disable-next-line no-unused-vars
     margin = {
       top: 10,
       right: 30,
@@ -41,7 +45,7 @@ export function weatherExtension(
     .join('rect')
     .attr('class', 'weather_upper')
     .attr('x', (d, i) => x(1) + (x(2) - x(1)) * i)
-    .attr('y', (d, i) => y(0))
+    .attr('y', () => y(0))
     .attr('width', width_rect)
     .attr('height', height_rect)
     .attr('fill', (d) => color(d.weather_upper));
@@ -54,7 +58,7 @@ export function weatherExtension(
     .join('rect')
     .attr('class', 'weather_lower')
     .attr('x', (d, i) => x(1) + (x(2) - x(1)) * i)
-    .attr('y', (d, i) => y(data.length + 1))
+    .attr('y', () => y(data.length + 1))
     .attr('width', width_rect)
     .attr('height', height_rect)
     .attr('fill', (d) => color(d.weather_lower));
@@ -130,7 +134,7 @@ export function differentialExtension(
       .data(data_day)
       .join('rect')
       .attr('class', 'day_num')
-      .attr('y', (d) => height - margin.bottom)
+      .attr('y', () => height - margin.bottom)
       .attr('x', (d, i) => {
         return x(1) + (x(2) - x(1)) * i;
       })
@@ -164,7 +168,7 @@ export function differentialExtension(
       .data(data_hour)
       .join('rect')
       .attr('class', 'hour_num')
-      .attr('x', (d) => width - margin.right)
+      .attr('x', () => width - margin.right)
       .attr('y', (d, i) => {
         return y(1) + (y(2) - y(1)) * i;
       })
@@ -178,5 +182,92 @@ export function differentialExtension(
       })
       .attr('fill-opacity', fillOpacity);
   })();
+  return svg;
+}
+
+export function axisExtension(
+  {
+    svg = d3.create('svg'),
+    margin = {
+      top: 10,
+      right: 30,
+      bottom: 10,
+      left: 30,
+    },
+  },
+  data,
+) {
+  if (data.length === 0) {
+    return svg;
+  }
+
+  const { x, y } = defineAxis({
+    xDomain: [0, data[0].length + 2],
+    yDomain: [0, data.length + 2],
+    ...arguments[0],
+  });
+  const daysSum = daysOfMonths.map((value, index, array) => {
+    if (index == 0) {
+      return 0;
+    } else {
+      return array.slice(0, index).reduce((a, b) => a + b);
+    }
+  });
+
+  svg
+    .append('g')
+    .attr('class', 'axis_month')
+    .selectAll('.months_axis')
+    .data(daysSum)
+    .join('text')
+    .attr('class', 'months_axis')
+    .attr('x', (d) => x(1) + (x(2) - x(1)) * d)
+    .attr('y', margin.top)
+    .text((d, i) => `${i + 5}`);
+
+  svg
+    .append('g')
+    .attr('class', 'axis_hours')
+    .selectAll('.hours_axis')
+    .data(ticksOfDay)
+    .join('text')
+    .attr('class', 'hours_axis')
+    .attr('x', x(1))
+    .attr('text-anchor', 'end')
+    .attr('y', (d) => y(1) + (y(2) - y(1)) * d)
+    .text((d) => `${d}`);
+
+  return svg;
+}
+
+export function datetimeExtension({
+  svg = d3.create('svg'),
+  width = 400,
+  margin = {
+    top: 10,
+    right: 30,
+    bottom: 10,
+    left: 30,
+  },
+}) {
+  let text = svg.append('g').attr('class', 'range');
+
+  width = width + margin.left + margin.right;
+  text
+    .append('text')
+    .attr('id', 'day_up')
+    .attr('x', width / 2 - 5)
+    .attr('y', 15)
+    .text('2017/5/1-2017/10/31')
+    .attr('text-anchor', 'end');
+
+  text
+    .append('text')
+    .attr('id', 'hour')
+    .attr('x', width / 2 + 5)
+    .attr('y', 15)
+    .text('0-24')
+    .attr('text-anchor', 'start');
+
   return svg;
 }
