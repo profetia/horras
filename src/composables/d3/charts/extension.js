@@ -296,7 +296,7 @@ export function datetimeExtension({
     .attr('id', 'day_up')
     .attr('x', width / 2 - 5)
     .attr('y', 15)
-    .text('2017/5/1-2017/10/31')
+    .text('May 1-Oct 31')
     .attr('text-anchor', 'end');
 
   text
@@ -304,7 +304,7 @@ export function datetimeExtension({
     .attr('id', 'hour')
     .attr('x', width / 2 + 5)
     .attr('y', 15)
-    .text('0-24')
+    .text('0:00-24:00')
     .attr('text-anchor', 'start');
 
   return svg;
