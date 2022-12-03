@@ -1,7 +1,12 @@
 import { weatherHaikou, weatherTypes } from '@/composables/utils/useWeather';
 import * as d3 from 'd3';
 import { defineAxis } from '@/composables/d3/charts/heatmap';
-import { daysOfMonths, ticksOfDay } from '@/composables/utils/useDatetime';
+import {
+  daysOfMonths,
+  ticksOfDay,
+  monthNameShort,
+  clockNames24,
+} from '@/composables/utils/useDatetime';
 
 export function weatherExtension(
   {
@@ -222,8 +227,8 @@ export function axisExtension(
     .join('text')
     .attr('class', 'months_axis')
     .attr('x', (d) => x(1) + (x(2) - x(1)) * d)
-    .attr('y', margin.top)
-    .text((d, i) => `${i + 5}`);
+    .attr('y', margin.top - 3)
+    .text((d, i) => `${monthNameShort[i + 4]}`);
 
   svg
     .append('g')
@@ -235,7 +240,7 @@ export function axisExtension(
     .attr('x', x(1))
     .attr('text-anchor', 'end')
     .attr('y', (d) => y(1) + (y(2) - y(1)) * d)
-    .text((d) => `${d}`);
+    .text((d) => `${clockNames24[d / 3]}`);
 
   return svg;
 }

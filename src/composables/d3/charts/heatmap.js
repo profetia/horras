@@ -2,6 +2,7 @@
 import * as d3 from 'd3';
 import useChartState from '@/composables/charts/useChartState';
 import { doDebounce } from '@/composables/utils/useDebounce';
+import { monthNameShort } from '@/composables/utils/useDatetime';
 
 const { setTimeRange, resetTimeRange } = useChartState();
 
@@ -191,10 +192,12 @@ export function brushedHeatmap(
     svg
       .select('#day_up')
       .text(
-        `2017/${xRange_time[0].month}/${xRange_time[0].day}-2017/${xRange_time[1].month}/${xRange_time[1].day}`,
+        `${monthNameShort[xRange_time[0].month - 1]} ${xRange_time[0].day}-${
+          monthNameShort[xRange_time[1].month - 1]
+        } ${xRange_time[1].day}`,
       );
 
-    svg.select('#hour').text(`${yRange[0]}-${yRange[1] + 1}`);
+    svg.select('#hour').text(`${yRange[0]}:00-${yRange[1] + 1}:00`);
     setTimeRange(xRange, yRange);
   };
   // console.log(margin);
