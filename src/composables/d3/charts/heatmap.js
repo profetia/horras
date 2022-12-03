@@ -1985,8 +1985,7 @@ export function naiveHeatmap(
         data_day[i] += data.value[j][i];
       }
     }
-    console.log(data_day);
-    console.log(data_hour);
+
     let draw_day_num = () => {
       let data_day_slope = [];
       let color = ['red', 'green'];
@@ -1998,28 +1997,27 @@ export function naiveHeatmap(
         .scaleLinear()
         .domain([0, data.value[0].length + 2])
         .range([margin.left, width - margin.right]);
-      let x_minus = day_x_scale(1) - day_x_scale(0);
-      console.log(x_minus);
-      let day_y_scale_slope = d3
-        .scaleLinear()
-        .domain(d3.extent(data_day_slope))
-        .range([height, height - margin.bottom]);
+      let x_minus = day_x_scale(1) - day_x_scale(0) - 1;
+      let heigh_p = 0.5;
       let day_y_scale_day = d3
         .scaleLinear()
-        .domain(d3.extent(data_day))
-        .range([height, height - margin.bottom]);
-      console.log(day_y_scale_slope);
+        .domain([0, d3.max(data_day)])
+        .range([height - margin.bottom, height]);
       svg
         .append('g')
+        .attr('class', 'day_num_all')
         .selectAll('.day_num')
         .data(data_day)
         .join('rect')
         .attr('class', 'day_num')
-        .attr('y', (d) => day_y_scale_day(d))
+        .attr('y', (d) => height - margin.bottom)
         .attr('x', (d, i) => {
           return x(1) + (x(2) - x(1)) * i;
         })
-        .attr('height', (d) => day_y_scale_day(0) - day_y_scale_day(d))
+        .attr(
+          'height',
+          (d) => heigh_p * (day_y_scale_day(d) - day_y_scale_day(0)),
+        )
         .attr('width', x_minus)
         .attr('fill', (d, i) => {
           return color[data_day_slope[i] >= 0 ? 0 : 1];
@@ -2027,7 +2025,37 @@ export function naiveHeatmap(
     };
     draw_day_num();
 
-    let draw_hour_num = () => {};
+    let draw_hour_num = () => {
+      console.log(data_hour);
+      let data_hour_slope = [];
+      let color = ['red', 'green'];
+      data_hour_slope.push(0);
+      for (let i = 1; i < data_hour.length; i++) {
+        data_hour_slope.push(data_hour[i] - data_hour[i - 1]);
+      }
+      let hour_x_scale_day = d3
+        .scaleLinear()
+        .domain(d3.extent(data_hour))
+        .range([width - margin.right, width - 10]);
+      let y_minus = y(2) - y(1) - 1;
+      svg
+        .append('g')
+        .attr('class', 'hour_num_all')
+        .selectAll('.hour_num')
+        .data(data_hour)
+        .join('rect')
+        .attr('class', 'hour_num')
+        .attr('x', (d) => width - margin.right)
+        .attr('y', (d, i) => {
+          return y(1) + (y(2) - y(1)) * i;
+        })
+        .attr('height', y_minus)
+        .attr('width', (d) => hour_x_scale_day(d) - hour_x_scale_day(0))
+        .attr('fill', (d, i) => {
+          return color[data_hour_slope[i] >= 0 ? 0 : 1];
+        });
+    };
+    draw_hour_num();
   };
 
   draw_num_lines();
@@ -2122,12 +2150,12 @@ export function brushedHeatmap(
 
     setTimeRange(xRange, yRange);
   };
-
+  console.log(margin);
   let brush = d3
     .brush()
     .extent([
       [0, 0],
-      [width, height],
+      [width - margin.right, height - margin.bottom],
     ])
     .on('start', brushstart)
     .on('brush', brushmove)
