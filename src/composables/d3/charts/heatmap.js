@@ -242,7 +242,7 @@ export function brushedHeatmap(
     .on('brush', brushmove)
     .on('end', brushend);
 
-  svg.select('#heatmap').call(brush);
+  svg.select('g').call(brush);
 
   return svg;
 }

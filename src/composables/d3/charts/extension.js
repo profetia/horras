@@ -73,7 +73,7 @@ export function differentialExtension(
       bottom: 10,
       left: 30,
     },
-    color = ['red', 'green'],
+    color = ['#2196F3', '#FFC107'],
     scale = {
       vertical: 0.75,
       horizontal: 0.5,
