@@ -16,13 +16,13 @@ export function weatherExtension(
   } = {},
   data,
 ) {
-  if (data.value.length === 0) {
+  if (data.length === 0) {
     return svg;
   }
 
   const { x, y } = defineAxis({
-    xDomain: [0, data.value[0].length + 2],
-    yDomain: [0, data.value.length + 2],
+    xDomain: [0, data[0].length + 2],
+    yDomain: [0, data.length + 2],
     ...arguments[0],
   });
 
@@ -54,7 +54,7 @@ export function weatherExtension(
     .join('rect')
     .attr('class', 'weather_lower')
     .attr('x', (d, i) => x(1) + (x(2) - x(1)) * i)
-    .attr('y', (d, i) => y(data.value.length + 1))
+    .attr('y', (d, i) => y(data.length + 1))
     .attr('width', width_rect)
     .attr('height', height_rect)
     .attr('fill', (d) => color(d.weather_lower));
@@ -81,25 +81,28 @@ export function differentialExtension(
   },
   data,
 ) {
-  if (data.value.length === 0) {
+  if (data.length === 0) {
     return svg;
   }
 
+  svg.select('.day_num_all').remove();
+  svg.select('.hour_num_all').remove();
+
   const { x, y } = defineAxis({
-    xDomain: [0, data.value[0].length + 2],
-    yDomain: [0, data.value.length + 2],
+    xDomain: [0, data[0].length + 2],
+    yDomain: [0, data.length + 2],
     ...arguments[0],
   });
 
   let data_hour = [];
   let data_day = [];
-  data.value.forEach((d) => {
+  data.forEach((d) => {
     data_hour.push(d3.sum(d));
   });
-  for (let i = 0; i < data.value[0].length; i++) {
+  for (let i = 0; i < data[0].length; i++) {
     data_day.push(0);
     for (let j = 0; j < 24; j++) {
-      data_day[i] += data.value[j][i];
+      data_day[i] += data[j][i];
     }
   }
 
@@ -112,7 +115,7 @@ export function differentialExtension(
     }
     let day_x_scale = d3
       .scaleLinear()
-      .domain([0, data.value[0].length + 2])
+      .domain([0, data[0].length + 2])
       .range([margin.left, width - margin.right]);
     let x_minus = day_x_scale(1) - day_x_scale(0) - 1;
     let day_y_scale_day = d3

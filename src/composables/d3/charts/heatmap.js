@@ -40,17 +40,17 @@ export function naiveHeatmap(
   },
   data,
 ) {
-  if (data.value.length === 0) {
+  if (data.length === 0) {
     return d3.create('svg');
   }
   const color = d3.scaleSequentialPow(
-    [0, data.value.length ? d3.max(d3.max(data.value)) : 0],
+    [0, data.length ? d3.max(d3.max(data)) : 0],
     heatmapColor,
   );
 
   const { x, y } = defineAxis({
-    xDomain: [0, data.value[0].length + 2],
-    yDomain: [0, data.value.length + 2],
+    xDomain: [0, data[0].length + 2],
+    yDomain: [0, data.length + 2],
     ...arguments[0],
   });
 
@@ -64,7 +64,7 @@ export function naiveHeatmap(
     .append('g')
     .attr('id', 'heatmap')
     .selectAll('g')
-    .data(data.value)
+    .data(data)
     .join('g')
     .attr('cy', (d, i) => y(1) + (y(2) - y(1)) * i)
     .attr('transform', (d, i) => {
@@ -140,13 +140,13 @@ export function brushedHeatmap(
   // A dict to indicate whether a cell is selected
   let isSelected = {};
 
-  if (data.value.length === 0) {
+  if (data.length === 0) {
     return svg;
   }
 
   const { x, y } = defineAxis({
-    xDomain: [0, data.value[0].length],
-    yDomain: [0, data.value.length],
+    xDomain: [0, data[0].length],
+    yDomain: [0, data.length],
     ...arguments[0],
   });
 
@@ -204,10 +204,8 @@ export function brushedHeatmap(
     let yRange = [y.invert(y0), y.invert(y1)];
 
     // Make sure xRange, yRange are non-negative integers
-    xRange = xRange.map((d) =>
-      clamp(Math.round(d), 0, data.value[0].length - 1),
-    );
-    yRange = yRange.map((d) => clamp(Math.round(d), 0, data.value.length - 1));
+    xRange = xRange.map((d) => clamp(Math.round(d), 0, data[0].length - 1));
+    yRange = yRange.map((d) => clamp(Math.round(d), 0, data.length - 1));
     let xRange_time = [];
     let Month_day = [31, 30, 31, 31, 30, 31];
     xRange.forEach((d) => {
