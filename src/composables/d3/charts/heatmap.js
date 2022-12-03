@@ -62,6 +62,7 @@ export function naiveHeatmap(
 
   svg
     .append('g')
+    .attr('id', 'heatmap')
     .selectAll('g')
     .data(data.value)
     .join('g')
@@ -2026,7 +2027,6 @@ export function naiveHeatmap(
     draw_day_num();
 
     let draw_hour_num = () => {
-      console.log(data_hour);
       let data_hour_slope = [];
       let color = ['red', 'green'];
       data_hour_slope.push(0);
@@ -2057,8 +2057,32 @@ export function naiveHeatmap(
     };
     draw_hour_num();
   };
-
   draw_num_lines();
+  let draw_range = () => {
+    let text = svg.append('g').attr('class', 'range');
+    text
+      .append('text')
+      .attr('id', 'day_up')
+      .attr('x', margin.left / 2 + 10)
+      .attr('y', 40)
+      .text('2017/5/1')
+      .attr('text-anchor', 'middle');
+    text
+      .append('text')
+      .attr('id', 'day_low')
+      .attr('x', margin.left / 2 + 10)
+      .attr('y', 60)
+      .text('-2017/10/31')
+      .attr('text-anchor', 'middle');
+    text
+      .append('text')
+      .attr('id', 'hour')
+      .attr('x', margin.left / 2 + 10)
+      .attr('y', 80)
+      .text('0-24')
+      .attr('text-anchor', 'middle');
+  };
+  draw_range();
   return svg;
 }
 
@@ -2133,6 +2157,10 @@ export function brushedHeatmap(
   const brushend = (event) => {
     const selection = event.selection;
     if (!selection) {
+      svg.select('#day_up').text(`2017/5/1`);
+
+      svg.select('#day_low').text(`-2017/10/31`);
+      svg.select('#hour').text(`0-24`);
       svg.selectAll('.naives').attr('opacity', '1');
       return;
     }
@@ -2147,21 +2175,41 @@ export function brushedHeatmap(
       clamp(Math.round(d), 0, data.value[0].length - 1),
     );
     yRange = yRange.map((d) => clamp(Math.round(d), 0, data.value.length - 1));
+    let xRange_time = [];
+    let Month_day = [31, 30, 31, 31, 30, 31];
+    xRange.forEach((d) => {
+      let m = 0;
+      let days = d + 1;
+      while (days > Month_day[m]) {
+        days -= Month_day[m];
+        m += 1;
+      }
+      xRange_time.push({
+        month: m + 5,
+        day: days,
+      });
+    });
+    svg
+      .select('#day_up')
+      .text(`2017/${xRange_time[0].month}/${xRange_time[0].day}`);
 
+    svg
+      .select('#day_low')
+      .text(`-2017/${xRange_time[1].month}/${xRange_time[1].day}`);
+    svg.select('#hour').text(`${yRange[0]}-${yRange[1] + 1}`);
     setTimeRange(xRange, yRange);
   };
-  console.log(margin);
   let brush = d3
     .brush()
     .extent([
-      [0, 0],
+      [margin.top, 0],
       [width - margin.right, height - margin.bottom],
     ])
     .on('start', brushstart)
     .on('brush', brushmove)
     .on('end', brushend);
 
-  svg.call(brush);
+  svg.select('#heatmap').call(brush);
 
   return svg;
 }

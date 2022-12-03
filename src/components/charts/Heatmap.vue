@@ -20,7 +20,7 @@ const props = defineProps({
     default: () => ({
       top: 10,
       right: 100, //留白准备画折线图，不然纯看热力图。。。
-      left: 30,
+      left: 70,
       bottom: 140, //留白准备画折线图，不然纯看热力图。。。
     }),
   },
