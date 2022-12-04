@@ -26,10 +26,15 @@ const countyLayer = polygon({
       } else {
         countyLayer.resetStyle(e.target);
       }
+      matchSelected(selected.id);
+      for (let adcode of actualShow.value) {
+        matchSelected(adcode);
+      }
     },
     click: (e) => {
       // haikouMap.fitBounds(e.target.getBounds());
       const adcode = e.target.feature.properties.adcode;
+      matchSelected(adcode);
       appendHighlights(adcode);
     },
   },
