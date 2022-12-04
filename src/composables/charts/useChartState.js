@@ -13,8 +13,8 @@ const hotspots = ref([]); // locations
 const highlights = ref([]); // counties
 const selected = reactive({
   id: 0,
-  color: '#666',
 });
+const actualShow = ref([]);
 
 const fetchStatus = ref(false);
 
@@ -49,6 +49,7 @@ export default () => {
     highlights,
     fetchStatus,
     selected,
+    actualShow,
 
     setTimeRange,
     resetTimeRange,

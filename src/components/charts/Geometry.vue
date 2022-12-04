@@ -4,13 +4,13 @@ import * as L from 'leaflet';
 import LeafletWrapper from '@/components/leaflet/core/LeafletWrapper.vue';
 import { heatmap } from '@/composables/leaflet/charts/heatmap';
 import { polygon } from '@/composables/leaflet/charts/polygon';
-import { getHaikouAll } from '@/composables/utils/useHaikou';
+import { getHaikouAll, getHaikouByCode } from '@/composables/utils/useHaikou';
 import useChartState from '@/composables/charts/useChartState';
 import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
 import { watch } from 'vue';
 
 const { geometry, chartConfig, mapState, lowResSample } = useGeometry();
-const { appendHighlights, selected } = useChartState();
+const { appendHighlights, selected, actualShow } = useChartState();
 
 const countyLayer = polygon({
   data: getHaikouAll(),
@@ -18,8 +18,11 @@ const countyLayer = polygon({
   color: 'grey',
   eventHandlers: {
     mouseout: (e) => {
-      if (e.target.feature.properties.adcode == selected.id) {
-        matchSelected(selected.id, selected.color);
+      const adcode = e.target.feature.properties.adcode;
+      if (adcode == selected.id) {
+        matchSelected(selected.id);
+      } else if (actualShow.value.includes(adcode)) {
+        matchSelected(adcode);
       } else {
         countyLayer.resetStyle(e.target);
       }
@@ -32,19 +35,22 @@ const countyLayer = polygon({
   },
 });
 
-function matchSelected(adcode, color) {
+function matchSelected(adcode) {
   for (let index in countyLayer._layers) {
     let layer = countyLayer._layers[index];
     // console.log(layer.feature.properties.adcode, value);
     if (layer.feature.properties.adcode == adcode) {
       layer.setStyle({
         weight: 5,
-        color: color,
+        color: getHaikouByCode(adcode).properties.color,
         dashArray: '',
         fillOpacity: 0.7,
       });
       layer.bringToFront();
-    } else {
+    } else if (
+      !actualShow.value.includes(layer.feature.properties.adcode) &&
+      layer.feature.properties.adcode != selected.id
+    ) {
       countyLayer.resetStyle(layer);
     }
   }
@@ -52,6 +58,12 @@ function matchSelected(adcode, color) {
 
 watch(selected, (value) => {
   matchSelected(value.id, value.color);
+});
+
+watch(actualShow, () => {
+  for (let adcode of actualShow.value) {
+    matchSelected(adcode);
+  }
 });
 
 const initFn = (node, { geometry, chartConfig }) => {
@@ -90,7 +102,10 @@ const initFn = (node, { geometry, chartConfig }) => {
 
   countyLayer.addTo(haikouMap);
 
-  matchSelected(selected.id, selected.color);
+  matchSelected(selected.id);
+  for (let adcode of actualShow.value) {
+    matchSelected(adcode);
+  }
 };
 </script>
 <template>

@@ -59,7 +59,6 @@ const chart = d3RefNode(() => {
     selectCallback: (_event, d) => {
       const adcode = d.id;
       selected.id = adcode;
-      selected.color = _event.target.style.fill;
     },
     // eslint-disable-next-line no-unused-vars
     unselectCallback: (_event, _d) => {

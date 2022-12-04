@@ -5,15 +5,13 @@ import useSnackbar from '@/composables/global/useSnackbar';
 import { doDebounce } from '@/composables/utils/useDebounce';
 import { recordWatch } from '@/composables/utils/useWatch';
 
-const { highlights, timeRange, fetchStatus } = useChartState();
+const { highlights, timeRange, fetchStatus, actualShow } = useChartState();
 const { showSnackbar } = useSnackbar();
 
 const topoGraphData = ref({
   nodes: [],
   edges: [],
 });
-
-const actualShow = ref([]);
 
 const fetchTopoGraphData = async () => {
   const dateLowerBound = 119;
