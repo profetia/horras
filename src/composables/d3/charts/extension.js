@@ -40,6 +40,12 @@ export function weatherExtension(
   let color = (d) => color_weather(color_scale(d));
   let width_rect = x(2) - x(1) - 1;
   let height_rect = y(2) - y(1) - 1;
+  /*  let tip = svg
+    .append('div')
+    .style('visibility', 'hidden')
+    .style('background', 'white')
+    .attr('font-size', '20pt')
+    .attr('id', 'tip'); */
   svg
     .append('g')
     .attr('class', 'weather')
@@ -49,11 +55,25 @@ export function weatherExtension(
     .data(weatherHaikou)
     .join('rect')
     .attr('class', 'weather_upper')
+    .attr('id', (d) => `weather_u_${d.days}`)
     .attr('x', (d, i) => x(1) + (x(2) - x(1)) * i)
     .attr('y', () => y(0))
     .attr('width', width_rect)
     .attr('height', height_rect)
-    .attr('fill', (d) => color(d.weather_upper));
+    .attr('fill', (d) => color(d.weather_upper))
+    .on('mouseover', (event, datum) => {
+      svg
+        .append('text')
+        .attr('class', 'tip')
+        .text(datum.weather_upper)
+        .attr('text-anchor', 'middle')
+        .attr('x', x(1) + (x(2) - x(1)) * datum.days)
+        .attr('y', y(0) - 5)
+        .attr('font-family', 'Verdana');
+    })
+    .on('mouseout', (event, datum) => {
+      svg.selectAll('.tip').remove();
+    });
   svg
     .select('.weather')
     .append('g')
@@ -66,7 +86,20 @@ export function weatherExtension(
     .attr('y', () => y(data.length + 1))
     .attr('width', width_rect)
     .attr('height', height_rect)
-    .attr('fill', (d) => color(d.weather_lower));
+    .attr('fill', (d) => color(d.weather_lower))
+    .on('mouseover', (event, datum) => {
+      svg
+        .append('text')
+        .attr('class', 'tip')
+        .text(datum.weather_lower)
+        .attr('text-anchor', 'middle')
+        .attr('x', x(1) + (x(2) - x(1)) * datum.days)
+        .attr('y', y(data.length + 1) + 35)
+        .attr('font-family', 'Verdana');
+    })
+    .on('mouseout', (event, datum) => {
+      svg.selectAll('.tip').remove();
+    });
 
   return svg;
 }
