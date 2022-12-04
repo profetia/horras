@@ -3,7 +3,9 @@ FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
-RUN yarn
+RUN apk add git && \
+    git --version && \
+    yarn
 COPY . .
 RUN yarn build
 
