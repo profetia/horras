@@ -94,7 +94,7 @@ export function weatherExtension(
         .text(datum.weather_lower)
         .attr('text-anchor', 'middle')
         .attr('x', x(1) + (x(2) - x(1)) * datum.days)
-        .attr('y', y(data.length + 1) + 35)
+        .attr('y', y(data.length + 1) + 21)
         .attr('font-family', 'Verdana');
     })
     .on('mouseout', (event, datum) => {

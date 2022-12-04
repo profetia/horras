@@ -160,8 +160,8 @@ export function brushedHeatmap(
   const brushend = (event) => {
     const selection = event.selection;
     if (!selection) {
-      svg.select('#day_up').text(`2017/5/1-2017/10/31`);
-      svg.select('#hour').text(`0-24`);
+      svg.select('#day_up').text(`May 1-Oct 31`);
+      svg.select('#hour').text(`0:00-24:00`);
       svg.selectAll('.naives').attr('opacity', '1');
       resetTimeRange();
       return;
