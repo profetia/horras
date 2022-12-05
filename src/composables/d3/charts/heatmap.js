@@ -67,9 +67,10 @@ export function naiveHeatmap(
     .selectAll('g')
     .data(data)
     .join('g')
-    .attr('cy', (d, i) => y(1) + (y(2) - y(1)) * i)
+    .attr('cy', (d, i) => y(i + 1))
+    .attr('index_y', (d, i) => i)
     .attr('transform', (d, i) => {
-      return `translate(0,${y(1) + (y(2) - y(1)) * i})`;
+      return `translate(0,${y(i + 1)})`;
     })
     .selectAll('.naives')
     .data((d) => d)
@@ -77,10 +78,14 @@ export function naiveHeatmap(
     .attr('class', 'naives')
     .attr('isCell', true)
     .attr('x', (d, i) => {
-      return x(1) + (x(2) - x(1)) * i;
+      return x(i + 1);
     })
+    .attr('index_x', (d, i) => i)
     .attr('cy', function (d, i, g) {
       return this.parentNode.getAttribute('cy');
+    })
+    .attr('index_y', function (d, i, g) {
+      return this.parentNode.getAttribute('index_y');
     })
     .attr('width', (d, i) => x(2) - x(1) - 1)
     .attr('height', (d, i) => y(2) - y(1) - 1)
@@ -118,6 +123,45 @@ export function brushedHeatmap(
     ...arguments[0],
   });
 
+  const updateSelect = (x0, x1, y0, y1) => {
+    let xRange = [data[0].length, 0];
+    let yRange = [data.length, 0];
+
+    svg.selectAll('.naives').each((d, i, g) => {
+      const node = d3.select(g[i]);
+      node.attr('opacity', '0.5');
+      if (!node.attr('isCell')) {
+        return;
+      }
+      const currentX = node.attr('x');
+      const currentY = node.attr('cy');
+      const index_x = node.attr('index_x');
+      const index_y = node.attr('index_y');
+
+      if (
+        currentX >= x0 &&
+        currentX <= x1 &&
+        currentY >= y0 &&
+        currentY <= y1
+      ) {
+        node.attr('opacity', '1');
+        isSelected[`${currentX},${currentY}`] = true;
+        xRange[0] = Math.min(xRange[0], index_x);
+        xRange[1] = Math.max(xRange[1], index_x);
+        yRange[0] = Math.min(yRange[0], index_y);
+        yRange[1] = Math.max(yRange[1], index_y);
+        // node.attr('filter', 'brightness(50%)');
+      } else {
+        if (isSelected[`${currentX},${currentY}`]) {
+          node.attr('opacity', '0.5');
+          //node.attr('filter', 'brightness(100%)');
+          isSelected[`${currentX},${currentY}`] = false;
+        }
+      }
+    });
+    return { xRange, yRange };
+  };
+
   const brushstart = () => {
     svg.node().focus();
   };
@@ -129,32 +173,8 @@ export function brushedHeatmap(
       return;
     }
     const [[x0, y0], [x1, y1]] = selection;
-    svg.selectAll('.naives').each((d, i, g) => {
-      const node = d3.select(g[i]);
-      node.attr('opacity', '0.5');
-      if (!node.attr('isCell')) {
-        return;
-      }
-      const currentX = node.attr('x');
-      const currentY = node.attr('cy');
 
-      if (
-        currentX >= x0 &&
-        currentX <= x1 &&
-        currentY >= y0 &&
-        currentY <= y1
-      ) {
-        isSelected[`${currentX},${currentY}`] = true;
-        node.attr('opacity', '1');
-        // node.attr('filter', 'brightness(50%)');
-      } else {
-        if (isSelected[`${currentX},${currentY}`]) {
-          node.attr('opacity', '0.5');
-          //node.attr('filter', 'brightness(100%)');
-          isSelected[`${currentX},${currentY}`] = false;
-        }
-      }
-    });
+    updateSelect(x0, x1, y0, y1);
   }, 50);
 
   const brushend = (event) => {
@@ -166,15 +186,11 @@ export function brushedHeatmap(
       resetTimeRange();
       return;
     }
+
     const [[x0, y0], [x1, y1]] = selection;
 
-    // Convert pixel coordinates to data coordinates
-    let xRange = [x.invert(x0), x.invert(x1)];
-    let yRange = [y.invert(y0), y.invert(y1)];
+    const { xRange, yRange } = updateSelect(x0, x1, y0, y1);
 
-    // Make sure xRange, yRange are non-negative integers
-    xRange = xRange.map((d) => clamp(Math.round(d), 0, data[0].length - 1));
-    yRange = yRange.map((d) => clamp(Math.round(d), 0, data.length - 1));
     let xRange_time = [];
     let Month_day = [31, 30, 31, 31, 30, 31];
     xRange.forEach((d) => {
