@@ -52,9 +52,9 @@ const chart = d3RefNode(() => {
       return row.map((unit, j) => {
         if (
           timeRange.clockRange[0] <= i &&
-          i < timeRange.clockRange[1] &&
+          i <= timeRange.clockRange[1] &&
           timeRange.dateRange[0] <= j &&
-          j < timeRange.dateRange[1]
+          j <= timeRange.dateRange[1]
         ) {
           return unit;
         } else {

@@ -27,7 +27,7 @@ Horras is recommended to be deployed with [Docker](https://www.docker.com/). To 
 docker-compose up -d
 ```
 
-The application will be running at [http://localhost](http://localhost).
+The application will be running at [http://localhost:6699](http://localhost:6699).
 
 ## Documentation
 

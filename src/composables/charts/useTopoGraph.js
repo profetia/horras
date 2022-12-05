@@ -31,7 +31,7 @@ const fetchTopoGraphData = async () => {
     },
   )({
     nodes: highlights.value,
-    date_range: timeRange.dateRange.map((value) => value + dateLowerBound),
+    date_range: [timeRange.dateRange[0] + dateLowerBound, timeRange.dateRange[1] + dateLowerBound],    
     clock_range: [
       timeRange.clockRange[0] * 60,
       (timeRange.clockRange[1] + 1) * 60,
