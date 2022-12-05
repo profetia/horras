@@ -24,3 +24,5 @@ pnpm-debug.log*
 
 # Customize
 static/example
+*.mp4
+*.ai
