@@ -6,7 +6,7 @@ import { heatmap } from '@/composables/leaflet/charts/heatmap';
 import { polygon } from '@/composables/leaflet/charts/polygon';
 import { getHaikouAll, getHaikouByCode } from '@/composables/utils/useHaikou';
 import useChartState from '@/composables/charts/useChartState';
-import { tileOpenStreetNormal } from '@/composables/leaflet/tiles/provider';
+import { tileGaoDeNormal } from '@/composables/leaflet/tiles/provider';
 import { watch } from 'vue';
 
 const { geometry, chartConfig, mapState, lowResSample } = useGeometry();
@@ -72,7 +72,7 @@ watch(actualShow, () => {
 });
 
 const initFn = (node, { geometry, chartConfig }) => {
-  const baseLayer = L.tileLayer(...tileOpenStreetNormal);
+  const baseLayer = L.tileLayer(...tileGaoDeNormal);
 
   // console.log(geometry);
   // console.log(geometry.data.filter((item) => item.count > geometry.max));
@@ -88,7 +88,7 @@ const initFn = (node, { geometry, chartConfig }) => {
     center: mapState.center,
     zoom: mapState.zoom,
     minZoom: 9,
-    maxZoom: 15,
+    maxZoom: 18,
     maxBounds: [
       [19.2, 109.0],
       [20.8, 111.35],
