@@ -209,6 +209,7 @@ export function topoGraph({
 
   const [linesMouseover, linesMouseout] = doSharedDebounce([
     (event, datum) => {
+      svg.selectAll('.tip').remove();
       svg
         .append('text')
         .attr('class', 'tip')
@@ -238,7 +239,7 @@ export function topoGraph({
     (_event, _datum) => {
       svg.selectAll('.tip').remove();
     }
-  ])
+  ], [200, 0]);
 
   const link = svg
     .append('g')
@@ -271,6 +272,7 @@ export function topoGraph({
 
   const [nodeMouseover, nodeMouseout] = doSharedDebounce([
     (event, datum) => {
+      svg.selectAll('.tip').remove();
       svg
         .append('text')
         .attr('class', 'tip')
@@ -300,7 +302,7 @@ export function topoGraph({
     (_event, _datum) => {
       svg.selectAll('.tip').remove();
     }
-  ])
+  ], [200, 0]);
 
 
   const node = svg

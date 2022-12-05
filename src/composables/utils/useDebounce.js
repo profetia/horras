@@ -10,7 +10,7 @@ export function doDebounce(callback, delay = 200) {
   };
 }
 
-export function doSharedDebounce(callbacks, delay) {
+export function doSharedDebounce(callbacks, delays = 200) {
   let timeoutID = undefined;
   return (() => {
     let res = []
@@ -21,7 +21,7 @@ export function doSharedDebounce(callbacks, delay) {
         clearTimeout(timeoutID);
         timeoutID = setTimeout(() => {
           callbacks[i].apply(that, args);
-        }, delay);
+        }, typeof delays === 'number' ? delays : delays[i]);
       })
     }
     return res
