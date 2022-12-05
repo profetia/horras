@@ -226,15 +226,31 @@ export function topoGraph({
           location,
         )})`,
     )
+
     .on('mouseover', (event, datum) => {
-      console.log(event);
       svg
         .append('text')
         .attr('class', 'tip')
-        .text(datum.weight)
-        .attr('text-anchor', 'middle')
+        .append('tspan')
+        .text(`Source:${getHaikouByCode(datum.source.id).properties.name}`)
+        .attr('text-anchor', 'start')
+        .attr('x', event.layerX)
+        .attr('y', event.layerY - 15);
+      svg
+        .select('.tip')
+        .append('tspan')
+        .text(`Target:${getHaikouByCode(datum.target.id).properties.name}`)
+        .attr('text-anchor', 'start')
         .attr('x', event.layerX)
         .attr('y', event.layerY)
+        .attr('font-family', 'Verdana');
+      svg
+        .select('.tip')
+        .append('tspan')
+        .text(`Num:${datum.weight}`)
+        .attr('text-anchor', 'star')
+        .attr('x', event.layerX)
+        .attr('y', event.layerY + 15)
         .attr('font-family', 'Verdana');
     })
     .on('mouseout', (event, datum) => {
@@ -248,20 +264,11 @@ export function topoGraph({
     .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
     .style('fill', (d) => getHaikouByCode(d.id).properties.color)
-    .attr('stroke-width', 2)
+    .attr('stroke-width', 4)
     .attr('stroke', '#666')
     .attr('isCalled', 'false')
     .call(drag(simulation))
-    .on('mouseover', (event, datum) => {
-      svg
-        .append('text')
-        .attr('class', 'tip')
-        .text(datum.weather_lower)
-        .attr('text-anchor', 'middle')
-        .attr('x', event.layerX)
-        .attr('y', event.layerX)
-        .attr('font-family', 'Verdana');
-    })
+
     .on('click', function (d) {
       // console.log(
       //   d3
@@ -310,23 +317,29 @@ export function topoGraph({
     })
 
     .on('mouseover', (event, datum) => {
-      console.log(datum);
       svg
         .append('text')
         .attr('class', 'tip')
         .append('tspan')
-        .text(`in:${datum.in_number}`)
-        .attr('text-anchor', 'middle')
+        .text(`Place:${getHaikouByCode(datum.id).properties.name}`)
+        .attr('text-anchor', 'start')
+        .attr('x', event.layerX)
+        .attr('y', event.layerY - 15);
+      svg
+        .select('.tip')
+        .append('tspan')
+        .text(`In:${datum.in_number}`)
+        .attr('text-anchor', 'start')
         .attr('x', event.layerX)
         .attr('y', event.layerY)
         .attr('font-family', 'Verdana');
       svg
         .select('.tip')
         .append('tspan')
-        .text(`out:${datum.out_number}`)
-        .attr('text-anchor', 'middle')
+        .text(`Out:${datum.out_number}`)
+        .attr('text-anchor', 'star')
         .attr('x', event.layerX)
-        .attr('y', event.layerY + 20)
+        .attr('y', event.layerY + 15)
         .attr('font-family', 'Verdana');
     })
     .on('mouseout', (event, datum) => {
