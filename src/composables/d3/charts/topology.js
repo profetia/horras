@@ -225,7 +225,21 @@ export function topoGraph({
           `#Topo_arrow_${d.source.id}_${d.target.id}`,
           location,
         )})`,
-    );
+    )
+    .on('mouseover', (event, datum) => {
+      console.log(event);
+      svg
+        .append('text')
+        .attr('class', 'tip')
+        .text(datum.weight)
+        .attr('text-anchor', 'middle')
+        .attr('x', event.layerX)
+        .attr('y', event.layerY)
+        .attr('font-family', 'Verdana');
+    })
+    .on('mouseout', (event, datum) => {
+      svg.selectAll('.tip').remove();
+    });
   const node = svg
     .selectAll('circle')
     .data(nodes)
@@ -238,6 +252,16 @@ export function topoGraph({
     .attr('stroke', '#666')
     .attr('isCalled', 'false')
     .call(drag(simulation))
+    .on('mouseover', (event, datum) => {
+      svg
+        .append('text')
+        .attr('class', 'tip')
+        .text(datum.weather_lower)
+        .attr('text-anchor', 'middle')
+        .attr('x', event.layerX)
+        .attr('y', event.layerX)
+        .attr('font-family', 'Verdana');
+    })
     .on('click', function (d) {
       // console.log(
       //   d3
@@ -283,6 +307,30 @@ export function topoGraph({
           .attr('opacity', '1')
           .attr('isCalled', 'false');
       }
+    })
+
+    .on('mouseover', (event, datum) => {
+      console.log(datum);
+      svg
+        .append('text')
+        .attr('class', 'tip')
+        .append('tspan')
+        .text(`in:${datum.in_number}`)
+        .attr('text-anchor', 'middle')
+        .attr('x', event.layerX)
+        .attr('y', event.layerY)
+        .attr('font-family', 'Verdana');
+      svg
+        .select('.tip')
+        .append('tspan')
+        .text(`out:${datum.out_number}`)
+        .attr('text-anchor', 'middle')
+        .attr('x', event.layerX)
+        .attr('y', event.layerY + 20)
+        .attr('font-family', 'Verdana');
+    })
+    .on('mouseout', (event, datum) => {
+      svg.selectAll('.tip').remove();
     });
 
   return svg;
