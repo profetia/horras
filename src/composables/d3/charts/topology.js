@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { getHaikouByCode } from '@/composables/utils/useHaikou';
+import { doSharedDebounce } from '@/composables/utils/useDebounce';
 
 export function topoGraph({
   data,
@@ -83,12 +84,14 @@ export function topoGraph({
       weight: Math.abs(weight),
     }); */ //work for linkLine
     nodes[
-      nodes.findIndex(function (item, index, arr) {
+      // eslint-disable-next-line no-unused-vars
+      nodes.findIndex(function (item, _index, _arr) {
         return item.id == data.edges[i].x;
       })
     ].neigebour.push(data.edges[i].y);
     nodes[
-      nodes.findIndex(function (item, index, arr) {
+      // eslint-disable-next-line no-unused-vars
+      nodes.findIndex(function (item, _index, _arr) {
         return item.id == data.edges[i].y;
       })
     ].neigebour.push(data.edges[i].x);
@@ -134,6 +137,7 @@ export function topoGraph({
         A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
         `;
   };
+  // eslint-disable-next-line no-unused-vars
   let linkLine = (d) => {
     const path = d3.path();
     path.moveTo(d.source.x, d.source.y);
@@ -201,6 +205,41 @@ export function topoGraph({
     .append('path')
 
     .attr('d', 'M0,-5L10,0L0,5');
+
+
+  const [linesMouseover, linesMouseout] = doSharedDebounce([
+    (event, datum) => {
+      svg
+        .append('text')
+        .attr('class', 'tip')
+        .append('tspan')
+        .text(`Source:${getHaikouByCode(datum.source.id).properties.name}`)
+        .attr('text-anchor', 'start')
+        .attr('x', event.layerX + 15)
+        .attr('y', event.layerY - 15);
+      svg
+        .select('.tip')
+        .append('tspan')
+        .text(`Target:${getHaikouByCode(datum.target.id).properties.name}`)
+        .attr('text-anchor', 'start')
+        .attr('x', event.layerX + 15)
+        .attr('y', event.layerY)
+        .attr('font-family', 'Verdana');
+      svg
+        .select('.tip')
+        .append('tspan')
+        .text(`Num:${datum.weight}`)
+        .attr('text-anchor', 'star')
+        .attr('x', event.layerX + 15)
+        .attr('y', event.layerY + 15)
+        .attr('font-family', 'Verdana');
+    }, 
+    // eslint-disable-next-line no-unused-vars
+    (_event, _datum) => {
+      svg.selectAll('.tip').remove();
+    }
+  ])
+
   const link = svg
     .append('g')
     .attr('fill', 'none')
@@ -226,36 +265,44 @@ export function topoGraph({
           location,
         )})`,
     )
+    .on('mouseover', linesMouseover)
+    .on('mouseout', linesMouseout);
 
-    .on('mouseover', (event, datum) => {
+
+  const [nodeMouseover, nodeMouseout] = doSharedDebounce([
+    (event, datum) => {
       svg
         .append('text')
         .attr('class', 'tip')
         .append('tspan')
-        .text(`Source:${getHaikouByCode(datum.source.id).properties.name}`)
+        .text(`Place:${getHaikouByCode(datum.id).properties.name}`)
         .attr('text-anchor', 'start')
-        .attr('x', event.layerX)
+        .attr('x', event.layerX + 15)
         .attr('y', event.layerY - 15);
       svg
         .select('.tip')
         .append('tspan')
-        .text(`Target:${getHaikouByCode(datum.target.id).properties.name}`)
+        .text(`In:${datum.in_number}`)
         .attr('text-anchor', 'start')
-        .attr('x', event.layerX)
+        .attr('x', event.layerX + 15)
         .attr('y', event.layerY)
         .attr('font-family', 'Verdana');
       svg
         .select('.tip')
         .append('tspan')
-        .text(`Num:${datum.weight}`)
+        .text(`Out:${datum.out_number}`)
         .attr('text-anchor', 'star')
-        .attr('x', event.layerX)
+        .attr('x', event.layerX + 15)
         .attr('y', event.layerY + 15)
         .attr('font-family', 'Verdana');
-    })
-    .on('mouseout', (event, datum) => {
+    }, 
+    // eslint-disable-next-line no-unused-vars
+    (_event, _datum) => {
       svg.selectAll('.tip').remove();
-    });
+    }
+  ])
+
+
   const node = svg
     .selectAll('circle')
     .data(nodes)
@@ -268,7 +315,6 @@ export function topoGraph({
     .attr('stroke', '#666')
     .attr('isCalled', 'false')
     .call(drag(simulation))
-
     .on('click', function (d) {
       // console.log(
       //   d3
@@ -315,36 +361,8 @@ export function topoGraph({
           .attr('isCalled', 'false');
       }
     })
-
-    .on('mouseover', (event, datum) => {
-      svg
-        .append('text')
-        .attr('class', 'tip')
-        .append('tspan')
-        .text(`Place:${getHaikouByCode(datum.id).properties.name}`)
-        .attr('text-anchor', 'start')
-        .attr('x', event.layerX)
-        .attr('y', event.layerY - 15);
-      svg
-        .select('.tip')
-        .append('tspan')
-        .text(`In:${datum.in_number}`)
-        .attr('text-anchor', 'start')
-        .attr('x', event.layerX)
-        .attr('y', event.layerY)
-        .attr('font-family', 'Verdana');
-      svg
-        .select('.tip')
-        .append('tspan')
-        .text(`Out:${datum.out_number}`)
-        .attr('text-anchor', 'star')
-        .attr('x', event.layerX)
-        .attr('y', event.layerY + 15)
-        .attr('font-family', 'Verdana');
-    })
-    .on('mouseout', (event, datum) => {
-      svg.selectAll('.tip').remove();
-    });
+    .on('mouseover', nodeMouseover)
+    .on('mouseout', nodeMouseout);
 
   return svg;
 }
