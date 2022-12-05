@@ -45,7 +45,14 @@ export function naiveHeatmap(
     return d3.create('svg');
   }
   const color = d3.scaleSequentialPow(
-    [0, data.length ? d3.max(d3.max(data)) : 0],
+    [
+      0,
+      data.length
+        ? d3.max(data, (d) => {
+            return d3.max(d);
+          })
+        : 0,
+    ],
     heatmapColor,
   );
 
