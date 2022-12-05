@@ -215,7 +215,7 @@ export function topoGraph({
     )
     .attr('id', (d) => `Topo_line_${d.source.id}_${d.target.id}`)
     .style('stroke', (d) => color(d.weight_color))
-    .attr('stroke-width', 3)
+    .attr('stroke-width', 4)
     .attr('fill', 'none')
     .attr('isCalled', 'false')
     .attr(
@@ -264,7 +264,7 @@ export function topoGraph({
     .attr('id', (d) => `Topo_node_${d.id}`)
     .attr('r', 5)
     .style('fill', (d) => getHaikouByCode(d.id).properties.color)
-    .attr('stroke-width', 4)
+    .attr('stroke-width', 2)
     .attr('stroke', '#666')
     .attr('isCalled', 'false')
     .call(drag(simulation))
