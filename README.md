@@ -40,7 +40,7 @@ Video demos of Horras can be found in [TBD](TBD).
 
 ## References
 
-Horras preprocesses its data from the [VASTEFEH](https://github.com/xsjk/ARTS1422-Project).
+Horras preprocesses its data from the [SARROH](https://github.com/xsjk/ARTS1422-Project).
 
 ## License
 
