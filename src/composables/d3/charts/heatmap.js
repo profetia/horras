@@ -2,7 +2,7 @@
 import * as d3 from 'd3';
 import useChartState from '@/composables/charts/useChartState';
 import { doDebounce } from '@/composables/utils/useDebounce';
-import { monthNameShort } from '@/composables/utils/useDatetime';
+import { daysOfMonths, monthNameShort } from '@/composables/utils/useDatetime';
 
 const { setTimeRange, resetTimeRange } = useChartState();
 
@@ -199,12 +199,11 @@ export function brushedHeatmap(
     const { xRange, yRange } = updateSelect(x0, x1, y0, y1);
 
     let xRange_time = [];
-    let Month_day = [31, 30, 31, 31, 30, 31];
     xRange.forEach((d) => {
       let m = 0;
       let days = d + 1;
-      while (days > Month_day[m]) {
-        days -= Month_day[m];
+      while (days > daysOfMonths[m]) {
+        days -= daysOfMonths[m];
         m += 1;
       }
       xRange_time.push({
