@@ -36,7 +36,6 @@ Documentation for Horras can be found in the [docs](/docs) directory.
 ## Misc
 
 Posters and slides for Horras can be found in the [media](/media) directory.
-Video demos of Horras can be found in [TBD](TBD).
 
 ## References
 
